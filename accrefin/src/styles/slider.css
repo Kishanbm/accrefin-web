@@ -1,0 +1,60 @@
+/* src/styles/slider.css */
+
+/* Base Input Reset & Track Height Definition */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent; 
+  height: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Target Webkit Track (Chrome, Edge, Safari) */
+.slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 12px;
+  border-radius: 9999px;
+  /* ⭐️ DYNAMIC FILL: The --fill-percent variable is used here ⭐️ */
+  background: linear-gradient(
+    to right, 
+    #0050B2 var(--fill-percent),  /* Blue filled part */
+    #e5e7eb var(--fill-percent)   /* Gray unfilled part */
+  );
+}
+
+/* Target Firefox Track */
+.slider::-moz-range-track {
+  width: 100%;
+  height: 12px; 
+  border-radius: 9999px;
+
+  background: linear-gradient(
+    to right, 
+    #0050B2 var(--fill-percent),
+    #e5e7eb var(--fill-percent)
+  );
+}
+
+/* Thumb Styles */
+.slider::-webkit-slider-thumb {
+  appearance: none; 
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #0050B2;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 80, 178, 0.3);
+  border: 3px solid white;
+  margin-top: -6px; /* Centers 24px thumb on 12px track */
+}
+
+.slider::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #0050B2;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 4px 8px rgba(0, 80, 178, 0.3);
+}

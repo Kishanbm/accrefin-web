@@ -1,0 +1,1 @@
+export { MachineryLoanPage } from "./MachineryLoanPage";

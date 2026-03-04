@@ -1,0 +1,327 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .all-\[unset\] {
+    all: unset;
+  }
+}
+
+:root {
+  --klantroef-com-479903hostingersitecomblack: rgba(0, 0, 0, 1);
+  --klantroef-com-479903hostingersitecomwhite: rgba(255, 255, 255, 1);
+  --www-paisabazaar-com-open-sans-bold-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-open-sans-bold-font-size: 20px;
+  --www-paisabazaar-com-open-sans-bold-font-style: normal;
+  --www-paisabazaar-com-open-sans-bold-font-weight: 700;
+  --www-paisabazaar-com-open-sans-bold-letter-spacing: 0px;
+  --www-paisabazaar-com-open-sans-bold-line-height: 22px;
+  --www-paisabazaar-com-open-sans-regular-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-open-sans-regular-font-size: 16px;
+  --www-paisabazaar-com-open-sans-regular-font-style: normal;
+  --www-paisabazaar-com-open-sans-regular-font-weight: 400;
+  --www-paisabazaar-com-open-sans-regular-letter-spacing: 0px;
+  --www-paisabazaar-com-open-sans-regular-line-height: 28.799999237060547px;
+  --www-paisabazaar-com-open-sans-semibold-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-open-sans-semibold-font-size: 10px;
+  --www-paisabazaar-com-open-sans-semibold-font-style: normal;
+  --www-paisabazaar-com-open-sans-semibold-font-weight: 600;
+  --www-paisabazaar-com-open-sans-semibold-letter-spacing: 0px;
+  --www-paisabazaar-com-open-sans-semibold-line-height: 15px;
+  --www-paisabazaar-com-semantic-button-font-family: "Inter", Helvetica;
+  --www-paisabazaar-com-semantic-button-font-size: 20px;
+  --www-paisabazaar-com-semantic-button-font-style: normal;
+  --www-paisabazaar-com-semantic-button-font-weight: 400;
+  --www-paisabazaar-com-semantic-button-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-button-line-height: 20px;
+  --www-paisabazaar-com-semantic-heading-1-upper-font-family: "Open Sans",
+    Helvetica;
+  --www-paisabazaar-com-semantic-heading-1-upper-font-size: 14px;
+  --www-paisabazaar-com-semantic-heading-1-upper-font-style: normal;
+  --www-paisabazaar-com-semantic-heading-1-upper-font-weight: 700;
+  --www-paisabazaar-com-semantic-heading-1-upper-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-heading-1-upper-line-height: 21px;
+  --www-paisabazaar-com-semantic-heading-2-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-semantic-heading-2-font-size: 16px;
+  --www-paisabazaar-com-semantic-heading-2-font-style: normal;
+  --www-paisabazaar-com-semantic-heading-2-font-weight: 600;
+  --www-paisabazaar-com-semantic-heading-2-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-heading-2-line-height: 24px;
+  --www-paisabazaar-com-semantic-heading-3-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-semantic-heading-3-font-size: 28px;
+  --www-paisabazaar-com-semantic-heading-3-font-style: normal;
+  --www-paisabazaar-com-semantic-heading-3-font-weight: 700;
+  --www-paisabazaar-com-semantic-heading-3-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-heading-3-line-height: 42px;
+  --www-paisabazaar-com-semantic-heading-3-upper-font-family: "Open Sans",
+    Helvetica;
+  --www-paisabazaar-com-semantic-heading-3-upper-font-size: 14px;
+  --www-paisabazaar-com-semantic-heading-3-upper-font-style: normal;
+  --www-paisabazaar-com-semantic-heading-3-upper-font-weight: 700;
+  --www-paisabazaar-com-semantic-heading-3-upper-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-heading-3-upper-line-height: 21px;
+  --www-paisabazaar-com-semantic-item-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-semantic-item-font-size: 12px;
+  --www-paisabazaar-com-semantic-item-font-style: normal;
+  --www-paisabazaar-com-semantic-item-font-weight: 600;
+  --www-paisabazaar-com-semantic-item-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-item-line-height: 18px;
+  --www-paisabazaar-com-semantic-label-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-semantic-label-font-size: 14px;
+  --www-paisabazaar-com-semantic-label-font-style: normal;
+  --www-paisabazaar-com-semantic-label-font-weight: 600;
+  --www-paisabazaar-com-semantic-label-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-label-line-height: 21px;
+  --www-paisabazaar-com-semantic-label-upper-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-semantic-label-upper-font-size: 12px;
+  --www-paisabazaar-com-semantic-label-upper-font-style: normal;
+  --www-paisabazaar-com-semantic-label-upper-font-weight: 700;
+  --www-paisabazaar-com-semantic-label-upper-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-label-upper-line-height: 18px;
+  --www-paisabazaar-com-semantic-link-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-semantic-link-font-size: 14px;
+  --www-paisabazaar-com-semantic-link-font-style: normal;
+  --www-paisabazaar-com-semantic-link-font-weight: 600;
+  --www-paisabazaar-com-semantic-link-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-link-line-height: 14px;
+  --www-paisabazaar-com-semantic-link-upper-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-semantic-link-upper-font-size: 16px;
+  --www-paisabazaar-com-semantic-link-upper-font-style: normal;
+  --www-paisabazaar-com-semantic-link-upper-font-weight: 600;
+  --www-paisabazaar-com-semantic-link-upper-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-link-upper-line-height: 28.799999237060547px;
+  --www-paisabazaar-com-semantic-strong-font-family: "Open Sans", Helvetica;
+  --www-paisabazaar-com-semantic-strong-font-size: 16px;
+  --www-paisabazaar-com-semantic-strong-font-style: normal;
+  --www-paisabazaar-com-semantic-strong-font-weight: 700;
+  --www-paisabazaar-com-semantic-strong-letter-spacing: 0px;
+  --www-paisabazaar-com-semantic-strong-line-height: 24px;
+  --wwwpaisabazaarcomabbey: rgba(69, 73, 77, 1);
+  --wwwpaisabazaarcomalice-blue: rgba(245, 249, 255, 1);
+  --wwwpaisabazaarcomalizarin-crimson: rgba(254, 0, 0, 1);
+  --wwwpaisabazaarcomamber: rgba(208, 177, 43, 1);
+  --wwwpaisabazaarcomanakiwa: rgba(137, 217, 255, 1);
+  --wwwpaisabazaarcomapricot: rgba(238, 119, 119, 1);
+  --wwwpaisabazaarcomathens-gray: rgba(242, 242, 242, 1);
+  --wwwpaisabazaarcomazalea: rgba(248, 198, 198, 1);
+  --wwwpaisabazaarcomazure: rgba(100, 113, 124, 1);
+  --wwwpaisabazaarcombianca-2: rgba(251, 249, 238, 0.02);
+  --wwwpaisabazaarcomblaze-orange: rgba(224, 161, 20, 1);
+  --wwwpaisabazaarcomblue-bayoux: rgba(80, 95, 121, 1);
+  --wwwpaisabazaarcomblue-ribbon: rgba(0, 102, 255, 1);
+  --wwwpaisabazaarcomblue-zodiac: rgba(14, 42, 74, 1);
+  --wwwpaisabazaarcombrandy-punch: rgba(226, 166, 14, 1);
+  --wwwpaisabazaarcombright-sun: rgba(255, 207, 72, 1);
+  --wwwpaisabazaarcombrown-rust: rgba(227, 163, 21, 1);
+  --wwwpaisabazaarcomburning-sand: rgba(216, 152, 122, 1);
+  --wwwpaisabazaarcombuttercup: rgba(255, 192, 16, 1);
+  --wwwpaisabazaarcombutterfly-bush: rgba(112, 84, 163, 1);
+  --wwwpaisabazaarcomcalifornia: rgba(227, 163, 21, 1);
+  --wwwpaisabazaarcomcape-cod: rgba(57, 57, 57, 1);
+  --wwwpaisabazaarcomcape-honey: rgba(249, 215, 173, 1);
+  --wwwpaisabazaarcomcaribbean-green: rgba(65, 119, 110, 1);
+  --wwwpaisabazaarcomcasablanca: rgba(255, 197, 66, 1);
+  --wwwpaisabazaarcomcerulean: rgba(12, 191, 209, 1);
+  --wwwpaisabazaarcomcharade: rgba(42, 43, 60, 1);
+  --wwwpaisabazaarcomchartreuse-yellow: rgba(218, 185, 46, 1);
+  --wwwpaisabazaarcomchelsea-gem: rgba(152, 57, 0, 1);
+  --wwwpaisabazaarcomchinook: rgba(167, 224, 183, 1);
+  --wwwpaisabazaarcomchristine: rgba(224, 161, 20, 1);
+  --wwwpaisabazaarcomcinderella: rgba(218, 255, 236, 1);
+  --wwwpaisabazaarcomcinnabar: rgba(233, 73, 73, 1);
+  --wwwpaisabazaarcomcitrine-white: rgba(248, 239, 204, 1);
+  --wwwpaisabazaarcomclementine: rgba(227, 96, 1, 1);
+  --wwwpaisabazaarcomcloud-burst: rgba(26, 34, 73, 1);
+  --wwwpaisabazaarcomcod-gray: rgba(12, 12, 14, 1);
+  --wwwpaisabazaarcomcognac: rgba(162, 44, 26, 1);
+  --wwwpaisabazaarcomcorn: rgba(237, 182, 7, 1);
+  --wwwpaisabazaarcomcream-brulee: rgba(249, 188, 160, 1);
+  --wwwpaisabazaarcomcrimson: rgba(229, 18, 27, 1);
+  --wwwpaisabazaarcomdandelion: rgba(255, 217, 102, 1);
+  --wwwpaisabazaarcomde-york: rgba(124, 209, 146, 1);
+  --wwwpaisabazaarcomdesert: rgba(142, 74, 47, 1);
+  --wwwpaisabazaarcomdusty-gray: rgba(163, 158, 150, 1);
+  --wwwpaisabazaarcomebony: rgba(14, 15, 32, 1);
+  --wwwpaisabazaarcomegg-white: rgba(255, 239, 191, 1);
+  --wwwpaisabazaarcomemerald: rgba(80, 193, 110, 1);
+  --wwwpaisabazaarcomenergy-yellow: rgba(246, 216, 76, 1);
+  --wwwpaisabazaarcomfaded-jade: rgba(65, 119, 110, 1);
+  --wwwpaisabazaarcomflush-orange: rgba(255, 156, 0, 1);
+  --wwwpaisabazaarcomfog: rgba(223, 223, 255, 1);
+  --wwwpaisabazaarcomfringy-flower: rgba(200, 236, 210, 1);
+  --wwwpaisabazaarcomfroly: rgba(244, 130, 139, 1);
+  --wwwpaisabazaarcomfrostee: rgba(234, 232, 232, 1);
+  --wwwpaisabazaarcomfuchsia-pink: rgba(197, 94, 178, 1);
+  --wwwpaisabazaarcomfun-green: rgba(0, 149, 59, 1);
+  --wwwpaisabazaarcomgeyser: rgba(218, 224, 229, 1);
+  --wwwpaisabazaarcomgigas: rgba(65, 71, 155, 1);
+  --wwwpaisabazaarcomgreen-vogue: rgba(5, 47, 95, 1);
+  --wwwpaisabazaarcomgreen-vogue-10: rgba(5, 47, 95, 0.1);
+  --wwwpaisabazaarcomgreen-vogue-16: rgba(5, 47, 95, 0.16);
+  --wwwpaisabazaarcomgreen-vogue-40: rgba(5, 47, 95, 0.4);
+  --wwwpaisabazaarcomgreen-vogue-6: rgba(5, 47, 95, 0.06);
+  --wwwpaisabazaarcomheath: rgba(89, 18, 43, 1);
+  --wwwpaisabazaarcomheavy-metal: rgba(29, 29, 27, 1);
+  --wwwpaisabazaarcomheliotrope: rgba(179, 102, 255, 1);
+  --wwwpaisabazaarcomhit-pink: rgba(200, 194, 185, 1);
+  --wwwpaisabazaarcomhoki: rgba(105, 130, 159, 1);
+  --wwwpaisabazaarcomirish-coffee: rgba(95, 45, 36, 1);
+  --wwwpaisabazaarcomjambalaya: rgba(93, 41, 17, 1);
+  --wwwpaisabazaarcomjaponica: rgba(255, 188, 51, 1);
+  --wwwpaisabazaarcomlima: rgba(82, 218, 31, 1);
+  --wwwpaisabazaarcomlimeade: rgba(115, 175, 0, 1);
+  --wwwpaisabazaarcomlink-water: rgba(223, 223, 255, 1);
+  --wwwpaisabazaarcommalibu: rgba(102, 163, 255, 1);
+  --wwwpaisabazaarcommercury: rgba(206, 226, 255, 1);
+  --wwwpaisabazaarcommilano-red: rgba(192, 5, 5, 1);
+  --wwwpaisabazaarcommirage: rgba(28, 29, 46, 1);
+  --wwwpaisabazaarcommirage-8: rgba(18, 20, 37, 0.08);
+  --wwwpaisabazaarcommischka: rgba(220, 221, 227, 1);
+  --wwwpaisabazaarcommountain-meadow: rgba(33, 173, 100, 1);
+  --wwwpaisabazaarcommuddy-waters: rgba(233, 178, 42, 1);
+  --wwwpaisabazaarcommule-fawn: rgba(142, 74, 47, 1);
+  --wwwpaisabazaarcommystic: rgba(218, 255, 236, 1);
+  --wwwpaisabazaarcomnile-blue: rgba(5, 47, 95, 1);
+  --wwwpaisabazaarcomnugget: rgba(199, 143, 19, 1);
+  --wwwpaisabazaarcomnutmeg: rgba(164, 66, 0, 1);
+  --wwwpaisabazaarcomnutmeg-wood-finish: rgba(102, 61, 0, 1);
+  --wwwpaisabazaarcomolivine: rgba(161, 193, 128, 1);
+  --wwwpaisabazaarcomonahau: rgba(191, 233, 253, 1);
+  --wwwpaisabazaarcomoslo-gray: rgba(160, 155, 146, 1);
+  --wwwpaisabazaarcompale-rose: rgba(218, 255, 236, 1);
+  --wwwpaisabazaarcompattens-blue: rgba(223, 223, 255, 1);
+  --wwwpaisabazaarcompeach-orange: rgba(249, 188, 160, 1);
+  --wwwpaisabazaarcomperiwinkle: rgba(191, 233, 253, 1);
+  --wwwpaisabazaarcomperiwinkle-gray: rgba(204, 224, 255, 1);
+  --wwwpaisabazaarcompersian-blue: rgba(27, 29, 199, 1);
+  --wwwpaisabazaarcompersian-blue-20: rgba(27, 29, 199, 0.2);
+  --wwwpaisabazaarcompicton-blue: rgba(45, 140, 238, 1);
+  --wwwpaisabazaarcompigeon-post: rgba(169, 194, 220, 1);
+  --wwwpaisabazaarcompink-salmon: rgba(255, 147, 152, 1);
+  --wwwpaisabazaarcompizazz: rgba(255, 156, 0, 1);
+  --wwwpaisabazaarcompomegranate: rgba(235, 69, 28, 1);
+  --wwwpaisabazaarcomport-gore: rgba(46, 47, 62, 1);
+  --wwwpaisabazaarcomprovincial-pink: rgba(245, 249, 255, 1);
+  --wwwpaisabazaarcomquill-gray: rgba(209, 211, 212, 1);
+  --wwwpaisabazaarcomrangitoto: rgba(49, 47, 36, 1);
+  --wwwpaisabazaarcomrazzmatazz: rgba(217, 3, 104, 1);
+  --wwwpaisabazaarcomrazzmatazz-60: rgba(224, 0, 103, 0.6);
+  --wwwpaisabazaarcomred-orange: rgba(250, 71, 44, 1);
+  --wwwpaisabazaarcomrose-bud: rgba(249, 188, 160, 1);
+  --wwwpaisabazaarcomsaffron-mango: rgba(252, 199, 80, 1);
+  --wwwpaisabazaarcomsalem: rgba(30, 156, 16, 1);
+  --wwwpaisabazaarcomsan-juan: rgba(48, 61, 114, 1);
+  --wwwpaisabazaarcomsanguine-brown: rgba(126, 61, 51, 1);
+  --wwwpaisabazaarcomsantas-gray: rgba(171, 166, 157, 1);
+  --wwwpaisabazaarcomscience-blue: rgba(0, 82, 204, 1);
+  --wwwpaisabazaarcomsilver: rgba(188, 188, 188, 1);
+  --wwwpaisabazaarcomsundown: rgba(255, 176, 178, 1);
+  --wwwpaisabazaarcomsunglow: rgba(255, 188, 51, 1);
+  --wwwpaisabazaarcomsunshade: rgba(255, 188, 51, 1);
+  --wwwpaisabazaarcomsupernova: rgba(255, 209, 0, 1);
+  --wwwpaisabazaarcomswans-down: rgba(234, 232, 232, 1);
+  --wwwpaisabazaarcomterracotta: rgba(255, 197, 66, 1);
+  --wwwpaisabazaarcomthunder: rgba(33, 33, 31, 1);
+  --wwwpaisabazaarcomthunderbird: rgba(182, 22, 22, 1);
+  --wwwpaisabazaarcomtonys-pink: rgba(233, 161, 136, 1);
+  --wwwpaisabazaarcomtorea-bay: rgba(24, 19, 174, 1);
+  --wwwpaisabazaarcomtravertine: rgba(242, 242, 242, 1);
+  --wwwpaisabazaarcomtree-poppy: rgba(241, 184, 43, 1);
+  --wwwpaisabazaarcomtulip-tree: rgba(235, 167, 78, 1);
+  --wwwpaisabazaarcomtuna: rgba(55, 58, 62, 1);
+  --wwwpaisabazaarcomturquoise-blue: rgba(96, 214, 230, 1);
+  --wwwpaisabazaarcomvermilion: rgba(255, 156, 0, 1);
+  --wwwpaisabazaarcomvis-vis: rgba(255, 234, 165, 1);
+  --wwwpaisabazaarcomwafer: rgba(209, 203, 194, 1);
+  --wwwpaisabazaarcomwewak: rgba(244, 164, 164, 1);
+  --wwwpaisabazaarcomwhiskey: rgba(236, 188, 81, 1);
+  --wwwpaisabazaarcomwhite-80: rgba(255, 255, 255, 0.8);
+  --wwwpaisabazaarcomwhite-lilac-80: rgba(235, 239, 247, 0.8);
+  --wwwpaisabazaarcomwild-sand: rgba(250, 235, 255, 1);
+  --wwwpaisabazaarcomwoodsmoke: rgba(22, 24, 25, 1);
+  --wwwpaisabazaarcomyellow-orange: rgba(255, 207, 72, 1);
+  --wwwpaisabazaarcomzircon: rgba(245, 249, 255, 1);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --card: transparent;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --card: transparent;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}

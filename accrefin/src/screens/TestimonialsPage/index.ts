@@ -1,0 +1,1 @@
+export {TestimonialsPage} from "../../screens/TestimonialsPage/TestimonialsPage.tsx";

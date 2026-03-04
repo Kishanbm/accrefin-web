@@ -1,0 +1,15 @@
+[[redirects]]
+from = "/blogs"
+to = "https://olivedrab-sandpiper-825908.hostingersite.com/"
+status = 200
+force = true
+
+[[redirects]]
+from = "/blogs/*"
+to = "https://olivedrab-sandpiper-825908.hostingersite.com/:splat"
+status = 200
+force = true
+
+[build]
+command = "npm run build"
+publish = "dist"

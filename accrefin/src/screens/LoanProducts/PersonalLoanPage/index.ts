@@ -1,0 +1,1 @@
+export { PersonalLoanPage } from "./PersonalLoanPage";

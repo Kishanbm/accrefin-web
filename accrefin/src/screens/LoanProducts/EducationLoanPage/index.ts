@@ -1,0 +1,1 @@
+export { EducationLoanPage } from "./EducationLoanPage";

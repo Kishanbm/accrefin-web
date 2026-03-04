@@ -1,0 +1,78 @@
+import { LoanProduct } from '../types/loan';
+
+export const LOAN_PRODUCTS: LoanProduct[] = [
+  {
+    id: 'personal',
+    name: 'Personal Loan',
+    icon: '👤',
+    summary: 'Quick funds for personal needs',
+    features: ['Up to ₹50 Lakh', 'Minimal Documentation', '24-hour Approval'],
+    rate: '10.5%',
+    gradient: 'from-blue-500 to-blue-600',
+  },
+  {
+    id: 'home',
+    name: 'Home Loan',
+    icon: '🏠',
+    summary: 'Make your dream home a reality',
+    features: ['Up to ₹5 Crore', 'Lowest Interest Rates', 'Flexible Tenure'],
+    rate: '8.5%',
+    gradient: 'from-green-500 to-green-600',
+  },
+  {
+    id: 'business',
+    name: 'Business Loan',
+    icon: '💼',
+    summary: 'Fuel your business growth',
+    features: ['Up to ₹10 Crore', 'Working Capital', 'Equipment Finance'],
+    rate: '11%',
+    gradient: 'from-purple-500 to-purple-600',
+  },
+  {
+    id: 'car',
+    name: 'Car Loan',
+    icon: '🚗',
+    summary: 'Drive your dream car today',
+    features: ['Up to ₹1 Crore', 'Quick Processing', 'Competitive Rates'],
+    rate: '9.5%',
+    gradient: 'from-orange-500 to-orange-600',
+  },
+  {
+    id: 'lap',
+    name: 'Loan Against Property',
+    icon: '🏢',
+    summary: "Unlock your property's value",
+    features: ['Up to ₹5 Crore', 'Lower Interest Rates', 'Flexible Repayment'],
+    rate: '9%',
+    gradient: 'from-red-500 to-red-600',
+  },
+  {
+    id: 'education',
+    name: 'Education Loan',
+    icon: '🎓',
+    summary: 'Invest in your future',
+    features: ['Up to ₹1.5 Crore', 'Moratorium Period', 'Tax Benefits'],
+    rate: '8.5%',
+    gradient: 'from-indigo-500 to-indigo-600',
+  },
+  {
+    id: 'gold',
+    name: 'Gold Loan',
+    icon: '🥇',
+    summary: 'Quick cash against gold',
+    features: ['Up to ₹1 Crore', 'Instant Approval', 'Minimal Documentation'],
+    rate: '7.5%',
+    gradient: 'from-yellow-500 to-yellow-600',
+  },
+  {
+    id: 'credit-card',
+    name: 'Credit Cards',
+    icon: '💳',
+    summary: 'Best credit card offers',
+    features: ['Lifetime Free Cards', 'Cashback & Rewards', 'Instant Approval'],
+    rate: '0%',
+    gradient: 'from-pink-500 to-pink-600',
+  },
+];
+
+export default LOAN_PRODUCTS;
