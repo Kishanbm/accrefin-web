@@ -1,0 +1,54 @@
+name: Deploy Static Site to Vercel (WordPress-trigger)
+
+on:
+  push:
+    branches: [ main ]
+  repository_dispatch:
+    types: [wordpress-update]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: WordPress trigger detected
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          echo "🔔 Deployment triggered by WordPress"
+          echo "Post ID: ${{ github.event.client_payload.post_id }}"
+          echo "Timestamp: ${{ github.event.client_payload.timestamp }}"
+
+      - name: Fetch WordPress content
+        run: |
+          echo "📥 Fetching latest WordPress content..."
+          mkdir -p content
+          curl -s https://olivedrab-sandpiper-825908.hostingersite.com/wp-json/wp/v2/posts > content/posts.json || echo "Failed to fetch posts"
+          curl -s https://olivedrab-sandpiper-825908.hostingersite.com/wp-json/wp/v2/pages > content/pages.json || echo "Failed to fetch pages"
+          echo "✅ Content fetched successfully"
+
+      - name: List fetched content
+        run: |
+          echo "📂 Content directory:"
+          ls -lh content/ || echo "No content directory"
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy to Vercel (Static)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          echo "🚀 Deploying to Vercel..."
+          vercel --prod --token $VERCEL_TOKEN --yes
+
+      - name: List files
+        run: ls -R
+
+      - name: Deployment complete
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "🌐 Your site is now live on Vercel"
