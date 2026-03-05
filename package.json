@@ -1,0 +1,10 @@
+{
+  "name": "accrefin-root",
+  "private": true,
+  "scripts": {
+    "install": "npm --prefix=accrefin install",
+    "build": "npm --prefix=accrefin run build",
+    "dev": "npm --prefix=accrefin run dev",
+    "start": "npm --prefix=accrefin run dev"
+  }
+}
