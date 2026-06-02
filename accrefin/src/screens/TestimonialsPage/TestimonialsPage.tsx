@@ -1,7 +1,6 @@
-import React from "react";
 import { Card, CardContent } from "../../components/ui/card";
-import { StarIcon } from "lucide-react";
-import { Badge } from "../../components/ui/badge"; // Ensure Badge is imported
+import { StarIcon, UserCircle } from "lucide-react";
+import { Badge } from "../../components/ui/badge";
 
 const testimonialsData = [
     {
@@ -93,7 +92,18 @@ export const TestimonialsPage = (): JSX.Element => {
                                     
                                     {/* Customer Info */}
                                     <div className="flex items-center gap-3 pt-4 border-t border-white/20">
-                                        <img src={t.photo} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+                                        {t.photo ? (
+                                            <img
+                                                src={t.photo}
+                                                alt={t.name}
+                                                className="w-12 h-12 rounded-full object-cover"
+                                                onError={(e) => {
+                                                    (e.currentTarget as HTMLImageElement).style.display = "none";
+                                                    (e.currentTarget.nextElementSibling as HTMLElement | null)?.classList.remove("hidden");
+                                                }}
+                                            />
+                                        ) : null}
+                                        <UserCircle className={`w-12 h-12 text-white/60 ${t.photo ? "hidden" : ""}`} />
                                         <div>
                                             <h4 className="font-semibold text-white">{t.name}</h4>
                                             <p className="text-sm text-white/70">{t.location}</p>

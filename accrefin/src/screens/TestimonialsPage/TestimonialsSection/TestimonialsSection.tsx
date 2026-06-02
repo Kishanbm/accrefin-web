@@ -1,5 +1,5 @@
 import { Card, CardContent } from "../../../components/ui/card";
-import { StarIcon } from "lucide-react";
+import { StarIcon, UserCircle } from "lucide-react";
 
 const headingFont = "font-['Power_Grotesk',_'DM_Sans',_sans-serif]";
 const bodyFont = "font-['DM_Sans',_sans-serif]";
@@ -87,7 +87,18 @@ export const TestimonialsSection = (): JSX.Element => {
                   </div>
                   <p className={`text-white leading-relaxed text-sm ${bodyFont}`}>"{testimonial.feedback}"</p>
                   <div className="flex items-center gap-3 pt-2">
-                    <img src={testimonial.photo} alt={testimonial.name} className="w-10 h-10 rounded-full object-cover border-2 border-white" />
+                    {testimonial.photo ? (
+                          <img
+                            src={testimonial.photo}
+                            alt={testimonial.name}
+                            className="w-10 h-10 rounded-full object-cover border-2 border-white"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).style.display = "none";
+                              (e.currentTarget.nextElementSibling as HTMLElement | null)?.classList.remove("hidden");
+                            }}
+                          />
+                        ) : null}
+                        <UserCircle className={`w-10 h-10 text-white/60 ${testimonial.photo ? "hidden" : ""}`} />
                     <h4 className={`font-semibold text-white text-sm ${bodyFont}`}>{testimonial.name}</h4>
                   </div>
                 </CardContent>
