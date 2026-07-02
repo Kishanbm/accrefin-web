@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
   const proto = request.headers.get('x-forwarded-proto') || 'https';
-  const redirectUrl = host ? `${proto}://${host}/login` : new URL('/login', request.url).toString();
+  const redirectUrl = host ? `${proto}://${host}/admin/login` : new URL('/admin/login', request.url).toString();
   
   const response = NextResponse.redirect(redirectUrl);
   

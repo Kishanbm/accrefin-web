@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 // import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 
-const BLOGFLOW_API = "https://blog-management-zeta-flax.vercel.app/api/public/posts";
-const BLOGFLOW_KEY = "bf_RDa2Z2oDaa2x2qjEZUbz3e1HaZrv4FxEMUCEQOx3";
+const BLOG_API = "/admin/api/posts";
 
 function fmt(d: string | null) {
   if (!d) return "";
@@ -16,8 +15,7 @@ export default function Blogs() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // ── BlogFlow API ──
-    fetch(`${BLOGFLOW_API}?apiKey=${BLOGFLOW_KEY}`)
+    fetch(`${BLOG_API}?status=PUBLISHED`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setPosts(data.data);

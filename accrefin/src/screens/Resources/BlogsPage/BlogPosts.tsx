@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import "../../../styles/blog.css";
 // import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 
-const BLOGFLOW_API = "https://blog-management-zeta-flax.vercel.app/api/public/posts";
-const BLOGFLOW_KEY = "bf_RDa2Z2oDaa2x2qjEZUbz3e1HaZrv4FxEMUCEQOx3";
+const BLOG_API = "/admin/api/posts";
 
 function fmt(d: string | null) {
   if (!d) return "";
@@ -20,11 +19,10 @@ export default function BlogPost() {
   useEffect(() => {
     if (!slug) return;
 
-    // ── BlogFlow API ──
-    fetch(`${BLOGFLOW_API}?apiKey=${BLOGFLOW_KEY}&slug=${slug}`)
+    fetch(`${BLOG_API}?status=PUBLISHED&slug=${slug}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.data) setPost(data.data);
+        if (data.success && data.data?.length > 0) setPost(data.data[0]);
         setLoading(false);
       })
       .catch(() => setLoading(false));

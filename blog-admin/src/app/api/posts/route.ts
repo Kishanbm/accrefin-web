@@ -7,11 +7,13 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const authorId = searchParams.get('authorId');
+    const slug = searchParams.get('slug');
 
     const posts = await prisma.post.findMany({
       where: {
         ...(status ? { status: status as any } : {}),
         ...(authorId ? { authorId } : {}),
+        ...(slug ? { slug } : {}),
       },
       include: {
         author: { select: { name: true, avatarUrl: true } },
