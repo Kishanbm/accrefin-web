@@ -121,15 +121,18 @@ export default function RootLayout({
             <div style={{ marginTop: 'auto' }}>
               <ul className="nav-menu">
                 <li>
-                  <a
-                    href="/admin/api/auth/logout"
+                  <button
+                    onClick={async () => {
+                      await fetch('/admin/api/auth/logout', { method: 'POST' });
+                      window.location.href = '/admin/login';
+                    }}
                     className="nav-item"
-                    style={{ color: '#ef4444' }}
+                    style={{ color: '#ef4444', background: 'none', border: 'none', width: '100%', cursor: 'pointer' }}
                     title={collapsed ? 'Logout' : undefined}
                   >
                     <span className="nav-icon"><LogOut size={20} /></span>
                     {!collapsed && <span className="nav-label">Logout</span>}
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
