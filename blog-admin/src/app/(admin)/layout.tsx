@@ -60,12 +60,12 @@ export default function RootLayout({
             {/* Logo */}
             <div className="sidebar-logo" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '0 0 16px', margin: '0 16px 20px', minHeight: 'auto', height: 'auto', overflow: 'visible' }}>
               {collapsed ? (
-                <div className="sidebar-logo-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', width: '36px', height: '36px', overflow: 'hidden' }}>
-                  <img src="/logo.png" alt="NT" style={{ width: 'auto', height: '90px', objectFit: 'contain', marginTop: '-24px', marginBottom: '-24px' }} />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', background: '#1d4ed8', borderRadius: '8px', fontWeight: 800, color: 'white', fontSize: '14px' }}>
+                  A
                 </div>
               ) : (
-                <div style={{ display: 'flex', alignItems: 'center', height: '60px', overflow: 'hidden', width: '100%', justifyContent: 'flex-start' }}>
-                  <img src="/logo.png" alt="NavigationTrading" style={{ height: '140px', width: 'auto', objectFit: 'contain', marginTop: '-35px', marginBottom: '-35px', marginLeft: '-10px' }} />
+                <div style={{ display: 'flex', alignItems: 'center', height: '60px' }}>
+                  <span style={{ fontSize: '20px', fontWeight: 800, color: 'white', letterSpacing: '-0.5px' }}>Accrefin</span>
                 </div>
               )}
             </div>

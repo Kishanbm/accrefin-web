@@ -3,7 +3,7 @@
   "outputDirectory": "accrefin/dist",
   "installCommand": "true",
   "routes": [
-    { "src": "/admin(.*)", "dest": "https://accrefin-web-ten.vercel.app$1" },
+    { "src": "/admin(.*)", "dest": "https://accrefin-web-ten.vercel.app/admin$1" },
     { "src": "/[^.]+$", "dest": "/index.html" }
   ]
 }

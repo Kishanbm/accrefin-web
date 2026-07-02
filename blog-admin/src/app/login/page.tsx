@@ -70,7 +70,7 @@ export default function LoginPage() {
           </div>
           <div>
             <h1 style={{ fontSize: '22px', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>
-              Navigation Trading
+              Accrefin
             </h1>
             <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', margin: '6px 0 0 0', fontWeight: 500 }}>
               Sign in to manage website configuration

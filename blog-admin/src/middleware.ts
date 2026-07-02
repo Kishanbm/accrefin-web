@@ -25,13 +25,13 @@ export async function middleware(request: NextRequest) {
     const sessionCookie = request.cookies.get('admin_session')?.value;
 
     if (!sessionCookie) {
-      return NextResponse.redirect(getRedirectUrl(request, '/login'));
+      return NextResponse.redirect(getRedirectUrl(request, '/admin/login'));
     }
 
     const decrypted = await decryptSession(sessionCookie);
 
     if (!decrypted || decrypted.expiresAt < Date.now()) {
-      const response = NextResponse.redirect(getRedirectUrl(request, '/login'));
+      const response = NextResponse.redirect(getRedirectUrl(request, '/admin/login'));
       response.cookies.set('admin_session', '', {
         httpOnly: true,
         path: '/',
@@ -47,7 +47,7 @@ export async function middleware(request: NextRequest) {
     if (sessionCookie) {
       const decrypted = await decryptSession(sessionCookie);
       if (decrypted && decrypted.expiresAt > Date.now()) {
-        return NextResponse.redirect(getRedirectUrl(request, '/admin-blog'));
+        return NextResponse.redirect(getRedirectUrl(request, '/admin/admin-blog'));
       }
     }
   }
