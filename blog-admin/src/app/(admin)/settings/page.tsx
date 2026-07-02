@@ -23,7 +23,7 @@ export default function SettingsPage() {
 
   const fetchAuthors = () => {
     setLoading(true);
-    fetch('/api/authors')
+    fetch('/admin/api/authors')
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -47,7 +47,7 @@ export default function SettingsPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/authors', {
+      const res = await fetch('/admin/api/authors', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email }),
@@ -72,7 +72,7 @@ export default function SettingsPage() {
     if (!confirm('Are you sure you want to delete this author? Any posts linked to this author might fail to render if they do not have an author.')) return;
 
     try {
-      const res = await fetch(`/api/authors?id=${id}`, {
+      const res = await fetch(`/admin/api/authors?id=${id}`, {
         method: 'DELETE',
       });
       const data = await res.json();

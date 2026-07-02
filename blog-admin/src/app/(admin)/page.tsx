@@ -86,7 +86,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetch('/api/posts')
+    fetch('/admin/api/posts')
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -104,7 +104,7 @@ export default function Dashboard() {
     if (!confirm('Are you sure you want to delete this post?')) return;
     
     try {
-      const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/admin/api/posts/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setPosts(posts.filter(p => p.id !== id));
       }

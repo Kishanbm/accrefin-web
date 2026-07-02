@@ -39,7 +39,7 @@ export default function EditPost({ params }: EditPostProps) {
   // Fetch authors and post data
   useEffect(() => {
     // 1. Fetch authors
-    fetch('/api/authors')
+    fetch('/admin/api/authors')
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -48,7 +48,7 @@ export default function EditPost({ params }: EditPostProps) {
       });
 
     // 2. Fetch post details
-    fetch(`/api/posts/${id}`)
+    fetch(`/admin/api/posts/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.data) {
@@ -94,7 +94,7 @@ export default function EditPost({ params }: EditPostProps) {
 
       setAutoSaveStatus('saving');
       try {
-        const res = await fetch(`/api/posts/${id}`, {
+        const res = await fetch(`/admin/api/posts/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...formDataRef.current, status: 'DRAFT' }),
@@ -152,7 +152,7 @@ export default function EditPost({ params }: EditPostProps) {
     // On edit, never auto-generate slug from title — the API will preserve the existing slug if empty
 
     try {
-      const res = await fetch(`/api/posts/${id}`, {
+      const res = await fetch(`/admin/api/posts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submitData)

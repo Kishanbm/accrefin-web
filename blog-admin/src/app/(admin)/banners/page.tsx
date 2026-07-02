@@ -32,7 +32,7 @@ export default function BannersPage() {
 
   const fetchBanners = () => {
     setLoading(true);
-    fetch('/api/banners')
+    fetch('/admin/api/banners')
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -97,7 +97,7 @@ export default function BannersPage() {
     }
 
     try {
-      const res = await fetch('/api/banners', {
+      const res = await fetch('/admin/api/banners', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -129,7 +129,7 @@ export default function BannersPage() {
     if (!confirm('Are you sure you want to delete this banner?')) return;
 
     try {
-      const res = await fetch(`/api/banners/${id}`, {
+      const res = await fetch(`/admin/api/banners/${id}`, {
         method: 'DELETE',
       });
       const data = await res.json();
@@ -153,13 +153,13 @@ export default function BannersPage() {
       const currentOrder = current.order;
       const aboveOrder = above.order;
 
-      await fetch(`/api/banners/${current.id}`, {
+      await fetch(`/admin/api/banners/${current.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order: aboveOrder }),
       });
 
-      await fetch(`/api/banners/${above.id}`, {
+      await fetch(`/admin/api/banners/${above.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order: currentOrder }),
@@ -181,13 +181,13 @@ export default function BannersPage() {
       const currentOrder = current.order;
       const belowOrder = below.order;
 
-      await fetch(`/api/banners/${current.id}`, {
+      await fetch(`/admin/api/banners/${current.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order: belowOrder }),
       });
 
-      await fetch(`/api/banners/${below.id}`, {
+      await fetch(`/admin/api/banners/${below.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order: currentOrder }),

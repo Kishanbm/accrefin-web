@@ -35,7 +35,7 @@ export default function ExitIntentPage() {
   const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
 
   useEffect(() => {
-    fetch('/api/config')
+    fetch('/admin/api/config')
       .then(res => res.json())
       .then(data => {
         if (data.success) setConfigs(data.data || {});
@@ -62,7 +62,7 @@ export default function ExitIntentPage() {
     setSaving(true);
     setStatus({ type: null, message: '' });
     try {
-      const res = await fetch('/api/config', {
+      const res = await fetch('/admin/api/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

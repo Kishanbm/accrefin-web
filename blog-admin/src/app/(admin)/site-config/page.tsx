@@ -415,7 +415,7 @@ export default function SiteConfigPage() {
 
   const fetchConfigs = () => {
     setLoading(true);
-    fetch('/api/config')
+    fetch('/admin/api/config')
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -459,7 +459,7 @@ export default function SiteConfigPage() {
         }
       });
 
-      const res = await fetch('/api/config', {
+      const res = await fetch('/admin/api/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

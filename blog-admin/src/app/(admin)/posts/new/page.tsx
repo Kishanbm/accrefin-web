@@ -29,7 +29,7 @@ export default function NewPost() {
 
   // Fetch authors for the dropdown
   useEffect(() => {
-    fetch('/api/authors')
+    fetch('/admin/api/authors')
       .then(res => res.json())
       .then(data => {
         if (data.success && data.data.length > 0) {
@@ -78,7 +78,7 @@ export default function NewPost() {
     }
 
     try {
-      const res = await fetch('/api/posts', {
+      const res = await fetch('/admin/api/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submitData)
