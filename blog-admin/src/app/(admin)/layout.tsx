@@ -122,8 +122,8 @@ export default function RootLayout({
               <ul className="nav-menu">
                 <li>
                   <button
-                    onClick={async () => {
-                      await fetch('/admin/api/auth/logout', { method: 'POST' });
+                    onClick={() => {
+                      document.cookie = 'admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
                       window.location.href = '/admin/login';
                     }}
                     className="nav-item"
