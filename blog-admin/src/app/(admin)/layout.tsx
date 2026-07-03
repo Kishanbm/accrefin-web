@@ -122,10 +122,7 @@ export default function RootLayout({
               <ul className="nav-menu">
                 <li>
                   <button
-                    onClick={() => {
-                      document.cookie = 'admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
-                      window.location.href = '/admin/login';
-                    }}
+                    onClick={() => { window.location.href = '/admin/logout'; }}
                     className="nav-item"
                     style={{ color: '#ef4444', background: 'none', border: 'none', width: '100%', cursor: 'pointer' }}
                     title={collapsed ? 'Logout' : undefined}
