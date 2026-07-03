@@ -1312,25 +1312,16 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
       if (!file) return;
 
       try {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `blog-images/${fileName}`;
-
-        // Upload to Supabase Storage
-        const { error: uploadError } = await supabase.storage
-          .from('images') // Assumes a public bucket named 'images'
-          .upload(filePath, file);
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
-        const { data } = supabase.storage.from('images').getPublicUrl(filePath);
-        
-        editor?.chain().focus().setImage({ src: data.publicUrl }).run();
+        const fd = new FormData();
+        fd.append('file', file);
+        fd.append('folder', 'blog-images');
+        const res = await fetch('/admin/api/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+        editor?.chain().focus().setImage({ src: data.url }).run();
       } catch (error) {
         console.error('Error uploading image:', error);
-        alert('Error uploading image. Make sure you have a public bucket named "images".');
+        alert('Error uploading image. Please try again.');
       }
     };
     input.click();

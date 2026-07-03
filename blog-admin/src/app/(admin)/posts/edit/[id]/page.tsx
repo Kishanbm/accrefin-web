@@ -118,24 +118,15 @@ export default function EditPost({ params }: EditPostProps) {
   const uploadCoverImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
     setSaving(true);
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `covers/${fileName}`;
-
     try {
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('images')
-        .getPublicUrl(filePath);
-
-      setFormData(prev => ({ ...prev, coverImage: data.publicUrl }));
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('folder', 'covers');
+      const res = await fetch('/admin/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+      setFormData(prev => ({ ...prev, coverImage: data.url }));
     } catch (error) {
       alert('Error uploading image');
     } finally {

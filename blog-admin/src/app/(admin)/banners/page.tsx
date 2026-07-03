@@ -59,23 +59,16 @@ export default function BannersPage() {
     setError('');
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `banners/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data } = supabase.storage.from('images').getPublicUrl(filePath);
-      setImageUrl(data.publicUrl);
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('folder', 'banners');
+      const res = await fetch('/admin/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+      setImageUrl(data.url);
     } catch (err: any) {
       console.error('Upload error:', err);
-      setError(err.message || 'Failed to upload image. Make sure a public bucket named "images" exists.');
+      setError(err.message || 'Failed to upload image.');
     } finally {
       setUploading(false);
     }

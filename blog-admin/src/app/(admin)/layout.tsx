@@ -13,6 +13,13 @@ export default function RootLayout({
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
+  useEffect(() => {
+    const hasCookie = document.cookie.split(';').some(c => c.trim().startsWith('admin_session='));
+    if (!hasCookie) {
+      window.location.href = '/admin/login';
+    }
+  }, []);
+
   // Persist collapse state across page loads
   useEffect(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
