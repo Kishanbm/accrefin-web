@@ -54,14 +54,21 @@ export async function middleware(request: NextRequest) {
 
   // Protect sensitive API routes (write methods / admin operations)
   if (pathname.startsWith('/api/')) {
-    const isPublicApi = 
-      (request.method === 'GET' && 
+    const isPublicApi =
+      (request.method === 'GET' &&
        (pathname.startsWith('/api/config') || pathname.startsWith('/api/posts') || pathname.startsWith('/api/banners'))) ||
       pathname.endsWith('/ai-summary');
-      
+
     const isAuthApi = pathname.startsWith('/api/auth');
 
     if (!isPublicApi && !isAuthApi) {
+      // Allow requests with valid API key (for n8n / external automation)
+      const apiKey = request.headers.get('x-api-key');
+      const validApiKey = process.env.BLOG_API_KEY;
+      if (validApiKey && apiKey === validApiKey) {
+        return NextResponse.next();
+      }
+
       const sessionCookie = request.cookies.get('admin_session')?.value;
       if (!sessionCookie || !(await decryptSession(sessionCookie))) {
         return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
