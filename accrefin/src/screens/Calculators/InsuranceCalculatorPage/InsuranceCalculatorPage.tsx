@@ -89,7 +89,10 @@ export const InsuranceCalculatorPage = (): JSX.Element => {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="font-semibold">Coverage Amount</label>
-                    <div className="font-bold">₹{(coverAmount/100000).toFixed(1)}L</div>
+                    <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1 rounded-lg font-bold">
+                      <span className="text-xs">₹</span>
+                      <input type="number" value={coverAmount} min={100000} max={10000000} step={100000} onChange={(e) => { const v = Number(e.target.value); if (v >= 100000 && v <= 10000000) setCoverAmount(v); }} className="bg-transparent text-white font-bold text-right w-24 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    </div>
                   </div>
                   <input type="range" min="100000" max="10000000" step="100000" value={coverAmount} onChange={(e)=>setCoverAmount(Number(e.target.value))} className="w-full h-3 slider" style={{ '--fill-percent': getFillPercentage(coverAmount,100000,10000000)} as React.CSSProperties}/>
                 </div>

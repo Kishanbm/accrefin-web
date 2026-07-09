@@ -274,24 +274,27 @@ export const HomeLoanCalculatorPage = (): JSX.Element => {
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
                         <label className="text-lg font-semibold text-gray-900">Loan Amount</label>
-                        <div className="bg-[#0050B2] text-white px-4 py-2 rounded-lg font-bold">
-                          {formatCurrency(loanAmount)}
+                        <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1.5 rounded-lg font-bold">
+                          <span className="text-sm">₹</span>
+                          <input
+                            type="number"
+                            value={loanAmount}
+                            min="100000"
+                            max="500000000"
+                            step="100000"
+                            onChange={(e) => {
+                              const v = Number(e.target.value);
+                              if (v >= 100000 && v <= 500000000) setLoanAmount(v);
+                            }}
+                            className="bg-transparent text-white font-bold text-right w-28 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
                         </div>
                       </div>
-                      {/* <input 
-                        type="range" 
-                        min="100000" 
-                        max="50000000" 
-                        step="100000"
-                        value={loanAmount}
-                        onChange={(e) => setLoanAmount(Number(e.target.value))}
-                        className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                      /> */}
 
-                      <input type="range" min="100000" max="50000000" step="100000" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} className="w-full h-3 bg-gray-200 rounded-lg cursor-pointer slider" style={{ '--fill-percent': getFillPercentage(loanAmount, 100000, 50000000) } as React.CSSProperties}/>
+                      <input type="range" min="100000" max="500000000" step="100000" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} className="w-full h-3 bg-gray-200 rounded-lg cursor-pointer slider" style={{ '--fill-percent': getFillPercentage(loanAmount, 100000, 500000000) } as React.CSSProperties}/>
                       <div className="flex justify-between text-sm text-gray-500">
                         <span>₹1L</span>
-                        <span>₹5Cr</span>
+                        <span>₹50Cr</span>
                       </div>
                     </div>
 
@@ -324,10 +327,24 @@ export const HomeLoanCalculatorPage = (): JSX.Element => {
                       <div className="flex justify-between items-center">
                         <label className="text-lg font-semibold text-gray-900">Loan Tenure</label>
                         <div className="flex items-center gap-2">
-                          <div className="bg-[#0050B2] text-white px-4 py-2 rounded-lg font-bold">
-                            {loanTenure} {tenureType}
+                          <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1.5 rounded-lg font-bold">
+                            <input
+                              type="number"
+                              value={loanTenure}
+                              min={tenureType === "years" ? 1 : 12}
+                              max={tenureType === "years" ? 30 : 360}
+                              step={1}
+                              onChange={(e) => {
+                                const v = Number(e.target.value);
+                                const max = tenureType === "years" ? 30 : 360;
+                                const min = tenureType === "years" ? 1 : 12;
+                                if (v >= min && v <= max) setLoanTenure(v);
+                              }}
+                              className="bg-transparent text-white font-bold text-right w-10 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                            <span className="text-sm">{tenureType}</span>
                           </div>
-                          <select 
+                          <select
                             value={tenureType}
                             onChange={(e) => setTenureType(e.target.value as "years" | "months")}
                             className="bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm"

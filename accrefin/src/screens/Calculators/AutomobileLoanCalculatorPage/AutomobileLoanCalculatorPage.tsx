@@ -28,10 +28,10 @@ export const AutomobileLoanCalculatorPage = (): JSX.Element => {
 
   // Vehicle type configurations
   const vehicleConfigs = {
-    "new-car": { label: "New Car", minRate: 7.5, maxRate: 14, maxAmount: 10000000 },
-    "used-car": { label: "Used Car", minRate: 9.5, maxRate: 18, maxAmount: 5000000 },
+    "new-car": { label: "New Car", minRate: 7.5, maxRate: 14, maxAmount: 50000000 },
+    "used-car": { label: "Used Car", minRate: 9.5, maxRate: 18, maxAmount: 20000000 },
     "two-wheeler": { label: "Two Wheeler", minRate: 8.5, maxRate: 16, maxAmount: 500000 },
-    "commercial": { label: "Commercial Vehicle", minRate: 10, maxRate: 20, maxAmount: 20000000 }
+    "commercial": { label: "Commercial Vehicle", minRate: 10, maxRate: 20, maxAmount: 100000000 }
   };
 
   // calculation handled by useLoanCalculator; compute processing fee locally

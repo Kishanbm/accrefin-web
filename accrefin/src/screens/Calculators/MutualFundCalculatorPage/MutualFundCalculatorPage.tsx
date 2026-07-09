@@ -64,7 +64,13 @@ export const MutualFundCalculatorPage = (): JSX.Element => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="space-y-6">
                 <div>
-                  <div className="flex justify-between mb-2"><label className="font-semibold">Monthly SIP</label><div className="font-bold">₹{monthlySip.toLocaleString()}</div></div>
+                  <div className="flex justify-between mb-2">
+                    <label className="font-semibold">Monthly SIP</label>
+                    <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1 rounded-lg font-bold">
+                      <span className="text-xs">₹</span>
+                      <input type="number" value={monthlySip} min={500} max={200000} step={500} onChange={(e) => { const v = Number(e.target.value); if (v >= 500 && v <= 200000) setMonthlySip(v); }} className="bg-transparent text-white font-bold text-right w-24 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    </div>
+                  </div>
                   <input type="range" min="500" max="200000" step="500" value={monthlySip} onChange={(e)=>setMonthlySip(Number(e.target.value))} className="w-full h-3 slider" style={{'--fill-percent': getFill(monthlySip,500,200000)} as React.CSSProperties}/>
                 </div>
 
@@ -74,7 +80,13 @@ export const MutualFundCalculatorPage = (): JSX.Element => {
                 </div>
 
                 <div>
-                  <div className="flex justify-between mb-2"><label className="font-semibold">Investment Duration (Years)</label><div className="font-bold">{years}</div></div>
+                  <div className="flex justify-between mb-2">
+                    <label className="font-semibold">Investment Duration (Years)</label>
+                    <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1 rounded-lg font-bold">
+                      <input type="number" value={years} min={1} max={40} step={1} onChange={(e) => { const v = Number(e.target.value); if (v >= 1 && v <= 40) setYears(v); }} className="bg-transparent text-white font-bold text-right w-10 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <span className="text-xs">Yrs</span>
+                    </div>
+                  </div>
                   <input type="range" min="1" max="40" value={years} onChange={(e)=>setYears(Number(e.target.value))} className="w-full h-3 slider" style={{'--fill-percent': getFill(years,1,40)} as React.CSSProperties}/>
                 </div>
               </div>

@@ -119,13 +119,13 @@ export const LoanProductsSection = (): JSX.Element => {
           {/* Scrollable cards */}
           <div
             ref={scrollRef}
-            className="flex gap-7 overflow-x-auto pb-4 scroll-smooth"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            className="flex gap-5 overflow-x-auto pb-4 scroll-smooth"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none", paddingRight: "60px" }}
           >
             {LOAN_PRODUCTS.map((product) => (
               <div
                 key={product.id}
-                className="flex-none w-[294px] flex flex-col justify-between"
+                className="flex-none w-[260px] flex flex-col justify-between"
                 style={{
                   background: "#F5F9FF",
                   border: "1px solid #E1E1E1",

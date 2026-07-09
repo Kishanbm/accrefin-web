@@ -56,7 +56,13 @@ export const CreditCardCalculatorPage = (): JSX.Element => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="space-y-6">
                 <div>
-                  <div className="flex justify-between mb-2"><label className="font-semibold">Outstanding Balance</label><div className="font-bold">₹{balance.toLocaleString()}</div></div>
+                  <div className="flex justify-between mb-2">
+                    <label className="font-semibold">Outstanding Balance</label>
+                    <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1 rounded-lg font-bold">
+                      <span className="text-xs">₹</span>
+                      <input type="number" value={balance} min={1000} max={1000000} step={500} onChange={(e) => { const v = Number(e.target.value); if (v >= 1000 && v <= 1000000) setBalance(v); }} className="bg-transparent text-white font-bold text-right w-24 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    </div>
+                  </div>
                   <input type="range" min="1000" max="1000000" step="500" value={balance} onChange={(e)=>setBalance(Number(e.target.value))} className="w-full h-3 slider" style={{'--fill-percent': `${((balance-1000)/(1000000-1000))*100}%`} as React.CSSProperties}/>
                 </div>
 
@@ -66,7 +72,13 @@ export const CreditCardCalculatorPage = (): JSX.Element => {
                 </div>
 
                 <div>
-                  <div className="flex justify-between mb-2"><label className="font-semibold">Planned Monthly Payment</label><div className="font-bold">₹{monthlyPayment.toLocaleString()}</div></div>
+                  <div className="flex justify-between mb-2">
+                    <label className="font-semibold">Planned Monthly Payment</label>
+                    <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1 rounded-lg font-bold">
+                      <span className="text-xs">₹</span>
+                      <input type="number" value={monthlyPayment} min={500} max={200000} step={100} onChange={(e) => { const v = Number(e.target.value); if (v >= 500 && v <= 200000) setMonthlyPayment(v); }} className="bg-transparent text-white font-bold text-right w-24 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    </div>
+                  </div>
                   <input type="range" min="500" max="200000" step="100" value={monthlyPayment} onChange={(e)=>setMonthlyPayment(Number(e.target.value))} className="w-full h-3 slider" style={{'--fill-percent': `${((monthlyPayment-500)/(200000-500))*100}%`} as React.CSSProperties}/>
                 </div>
               </div>

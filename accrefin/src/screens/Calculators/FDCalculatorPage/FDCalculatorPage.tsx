@@ -388,8 +388,20 @@ export const FDCalculatorPage = (): JSX.Element => {
                             </div>
                           </div>
                         </label>
-                        <div className="bg-[#0050B2] text-white px-4 py-2 rounded-lg font-bold">
-                          {formatCurrency(principalAmount)}
+                        <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1.5 rounded-lg font-bold">
+                          <span className="text-sm">₹</span>
+                          <input
+                            type="number"
+                            value={principalAmount}
+                            min={1000}
+                            max={10000000}
+                            step={1000}
+                            onChange={(e) => {
+                              const v = Number(e.target.value);
+                              if (v >= 1000 && v <= 10000000) setPrincipalAmount(v);
+                            }}
+                            className="bg-transparent text-white font-bold text-right w-28 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
                         </div>
                       </div>
                       {/* <input 
@@ -473,10 +485,23 @@ export const FDCalculatorPage = (): JSX.Element => {
                           </div>
                         </label>
                         <div className="flex items-center gap-2">
-                          <div className="bg-[#0050B2] text-white px-4 py-2 rounded-lg font-bold">
-                            {tenure} {tenureType}
+                          <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1.5 rounded-lg font-bold">
+                            <input
+                              type="number"
+                              value={tenure}
+                              min={tenureType === 'years' ? 1 : 1}
+                              max={tenureType === 'years' ? 10 : 120}
+                              step={1}
+                              onChange={(e) => {
+                                const v = Number(e.target.value);
+                                const max = tenureType === 'years' ? 10 : 120;
+                                if (v >= 1 && v <= max) setTenure(v);
+                              }}
+                              className="bg-transparent text-white font-bold text-right w-10 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                            <span className="text-sm">{tenureType}</span>
                           </div>
-                          <select 
+                          <select
                             value={tenureType}
                             onChange={(e) => setTenureType(e.target.value)}
                             className="bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm"

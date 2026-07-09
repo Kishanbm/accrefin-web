@@ -331,33 +331,36 @@ export const PersonalLoanCalculatorPage = (): JSX.Element => {
                             </div>
                           </div>
                         </div>
-                        <div className="bg-[#0050B2] text-white px-4 py-2 rounded-lg font-bold">
-                          {formatCurrency(loanAmount)}
+                        <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1.5 rounded-lg font-bold">
+                          <span className="text-sm">₹</span>
+                          <input
+                            type="number"
+                            value={loanAmount}
+                            min="25000"
+                            max="100000000"
+                            step="25000"
+                            onChange={(e) => {
+                              const v = Number(e.target.value);
+                              if (v >= 25000 && v <= 100000000) setLoanAmount(v);
+                            }}
+                            className="bg-transparent text-white font-bold text-right w-28 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
                         </div>
                       </div>
-                      {/* <input 
-                        type="range" 
-                        min="25000" 
-                        max="5000000" 
-                        step="25000"
-                        value={loanAmount}
-                        onChange={(e) => setLoanAmount(Number(e.target.value))}
-                        className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                      /> */}
 
                       <input
                           type="range"
                           min="25000"
-                          max="5000000"
+                          max="100000000"
                           step="25000"
                           value={loanAmount}
                           onChange={(e) => setLoanAmount(Number(e.target.value))}
                           className="w-full h-3 bg-gray-200 rounded-lg cursor-pointer slider"
-                          style={{ '--fill-percent': getFillPercentage(loanAmount, 25000, 5000000) } as React.CSSProperties}
+                          style={{ '--fill-percent': getFillPercentage(loanAmount, 25000, 100000000) } as React.CSSProperties}
                       />
                       <div className="flex justify-between text-sm text-gray-500">
                         <span>₹25K</span>
-                        <span>₹50L</span>
+                        <span>₹10Cr</span>
                       </div>
                     </div>
 
@@ -416,10 +419,24 @@ export const PersonalLoanCalculatorPage = (): JSX.Element => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="bg-[#0050B2] text-white px-4 py-2 rounded-lg font-bold">
-                            {loanTenure} {tenureType}
+                          <div className="flex items-center gap-1 bg-[#0050B2] text-white px-3 py-1.5 rounded-lg font-bold">
+                            <input
+                              type="number"
+                              value={loanTenure}
+                              min={tenureType === 'years' ? 1 : 12}
+                              max={tenureType === 'years' ? 7 : 84}
+                              step={1}
+                              onChange={(e) => {
+                                const v = Number(e.target.value);
+                                const max = tenureType === 'years' ? 7 : 84;
+                                const min = tenureType === 'years' ? 1 : 12;
+                                if (v >= min && v <= max) setLoanTenure(v);
+                              }}
+                              className="bg-transparent text-white font-bold text-right w-10 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                            <span className="text-sm">{tenureType}</span>
                           </div>
-                          <select 
+                          <select
                             value={tenureType}
                             onChange={(e) => setTenureType(e.target.value as 'years' | 'months')}
                             className="bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm"

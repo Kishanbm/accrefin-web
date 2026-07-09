@@ -44,25 +44,25 @@ const configs: Record<string, {
   title: string;
 }> = {
   "home-loan": {
-    maxAmount: 50000000, minAmount: 100000,
+    maxAmount: 500000000, minAmount: 100000,
     maxYears: 30, minYears: 1,
     defaultRate: 8, minRate: 6.5, maxRate: 15,
     title: "Home Loan\nEMI Calculator",
   },
   "personal-loan": {
-    maxAmount: 5000000, minAmount: 25000,
+    maxAmount: 100000000, minAmount: 25000,
     maxYears: 7, minYears: 1,
     defaultRate: 10.5, minRate: 9.5, maxRate: 24,
     title: "Personal Loan\nEMI Calculator",
   },
   "car-loan": {
-    maxAmount: 2000000, minAmount: 100000,
+    maxAmount: 50000000, minAmount: 100000,
     maxYears: 7, minYears: 1,
     defaultRate: 9.5, minRate: 7.5, maxRate: 18,
     title: "Car Loan\nEMI Calculator",
   },
   "business-loan": {
-    maxAmount: 10000000, minAmount: 100000,
+    maxAmount: 300000000, minAmount: 100000,
     maxYears: 10, minYears: 1,
     defaultRate: 12, minRate: 10, maxRate: 24,
     title: "Business Loan\nEMI Calculator",
@@ -153,19 +153,31 @@ export const FinancialCalculatorSection = (): JSX.Element => {
               }}
             >
               <span>Starting Today To Years</span>
-              <span
-                className="font-bold"
+              <input
+                type="number"
+                value={loanYears}
+                min={config.minYears}
+                max={config.maxYears}
+                step={1}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (v >= config.minYears && v <= config.maxYears) setLoanYears(v);
+                }}
                 style={{
-                  padding: "4px 12px",
+                  padding: "4px 8px",
                   borderRadius: "8px",
                   background: "#FFFFFF",
                   border: "1px solid #D0E4FF",
                   color: "#111827",
                   fontSize: "14px",
+                  fontWeight: 700,
+                  width: "56px",
+                  textAlign: "center",
+                  outline: "none",
+                  MozAppearance: "textfield",
                 }}
-              >
-                {loanYears}
-              </span>
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
               <span>Years</span>
             </div>
 
@@ -215,7 +227,21 @@ export const FinancialCalculatorSection = (): JSX.Element => {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-700">Loan Amount</span>
-                  <span className="text-sm font-semibold text-gray-900">{fmt(loanAmount)}</span>
+                  <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg px-2 py-1">
+                    <span className="text-xs text-gray-500">₹</span>
+                    <input
+                      type="number"
+                      value={loanAmount}
+                      min={config.minAmount}
+                      max={config.maxAmount}
+                      step={50000}
+                      onChange={(e) => {
+                        const v = Number(e.target.value);
+                        if (v >= config.minAmount && v <= config.maxAmount) setLoanAmount(v);
+                      }}
+                      className="text-sm font-semibold text-gray-900 w-28 text-right outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                  </div>
                 </div>
                 <input
                   type="range"
@@ -235,7 +261,21 @@ export const FinancialCalculatorSection = (): JSX.Element => {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-700">Loan Tenure</span>
-                  <span className="text-sm font-semibold text-gray-900">{loanYears} Yrs</span>
+                  <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg px-2 py-1">
+                    <input
+                      type="number"
+                      value={loanYears}
+                      min={config.minYears}
+                      max={config.maxYears}
+                      step={1}
+                      onChange={(e) => {
+                        const v = Number(e.target.value);
+                        if (v >= config.minYears && v <= config.maxYears) setLoanYears(v);
+                      }}
+                      className="text-sm font-semibold text-gray-900 w-10 text-right outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    <span className="text-xs text-gray-500">Yrs</span>
+                  </div>
                 </div>
                 <input
                   type="range"

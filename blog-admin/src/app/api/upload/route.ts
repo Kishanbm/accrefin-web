@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
     const { data } = supabaseAdmin.storage.from('images').getPublicUrl(filePath);
-    return NextResponse.json({ url: data.publicUrl });
+    return NextResponse.json({ success: true, url: data.publicUrl });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
