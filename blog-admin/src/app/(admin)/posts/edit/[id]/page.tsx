@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, use } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { supabase } from '@/lib/supabase';
@@ -17,8 +17,6 @@ export default function EditPost({ params }: EditPostProps) {
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const lastSavedDataRef = useRef<string>('');
   const [authors, setAuthors] = useState<{id: string, name: string}[]>([]);
   
   const [formData, setFormData] = useState({
@@ -31,7 +29,6 @@ export default function EditPost({ params }: EditPostProps) {
     authorId: '',
     excerpt: '',
     coverImage: '',
-    coverImageAlt: '',
     categoryName: '',
     tagNames: ''
   });
@@ -39,7 +36,7 @@ export default function EditPost({ params }: EditPostProps) {
   // Fetch authors and post data
   useEffect(() => {
     // 1. Fetch authors
-    fetch('/admin/api/authors')
+    fetch('/api/authors')
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -48,12 +45,12 @@ export default function EditPost({ params }: EditPostProps) {
       });
 
     // 2. Fetch post details
-    fetch(`/admin/api/posts/${id}`)
+    fetch(`/api/posts/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.data) {
           const post = data.data;
-          const loaded = {
+          setFormData({
             title: post.title || '',
             slug: post.slug || '',
             seoTitle: post.seoTitle || '',
@@ -63,12 +60,9 @@ export default function EditPost({ params }: EditPostProps) {
             authorId: post.authorId || '',
             excerpt: post.excerpt || '',
             coverImage: post.coverImage || '',
-            coverImageAlt: post.coverImageAlt || '',
             categoryName: post.category?.name || '',
             tagNames: post.tags?.map((t: any) => t.name).join(', ') || ''
-          };
-          setFormData(loaded);
-          lastSavedDataRef.current = JSON.stringify(loaded);
+          });
         } else {
           alert('Failed to load post data');
         }
@@ -81,51 +75,43 @@ export default function EditPost({ params }: EditPostProps) {
       });
   }, [id]);
 
-  // Auto-save every 10 seconds if there are unsaved changes
-  const formDataRef = useRef(formData);
-  formDataRef.current = formData;
-
-  useEffect(() => {
-    if (loading) return;
-
-    const interval = setInterval(async () => {
-      const current = JSON.stringify(formDataRef.current);
-      if (current === lastSavedDataRef.current) return; // nothing changed
-
-      setAutoSaveStatus('saving');
-      try {
-        const res = await fetch(`/admin/api/posts/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...formDataRef.current, status: 'DRAFT' }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          lastSavedDataRef.current = current;
-          setAutoSaveStatus('saved');
-          setTimeout(() => setAutoSaveStatus('idle'), 3000);
-        } else {
-          setAutoSaveStatus('error');
+  const resizeImage = (file: File, maxWidth = 1200, maxHeight = 800, quality = 0.85): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
         }
-      } catch {
-        setAutoSaveStatus('error');
-      }
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [id, loading]);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')), 'image/jpeg', quality);
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  };
 
   const uploadCoverImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setSaving(true);
     try {
+      const resized = await resizeImage(file);
       const fd = new FormData();
-      fd.append('file', file);
-      fd.append('folder', 'covers');
-      const res = await fetch('/admin/api/upload', { method: 'POST', body: fd });
+      fd.append('file', new File([resized], 'cover.jpg', { type: 'image/jpeg' }));
+
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
       const data = await res.json();
-      if (!data.success) throw new Error(data.error);
+      if (!res.ok) throw new Error(data.error);
+
       setFormData(prev => ({ ...prev, coverImage: data.url }));
     } catch (error) {
       alert('Error uploading image');
@@ -136,14 +122,16 @@ export default function EditPost({ params }: EditPostProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return; // Don't save if post data hasn't loaded yet
     setSaving(true);
 
-    const submitData = { ...formData };
-    // On edit, never auto-generate slug from title — the API will preserve the existing slug if empty
+    // Auto-generate slug if empty
+    let submitData = { ...formData };
+    if (!submitData.slug) {
+      submitData.slug = submitData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    }
 
     try {
-      const res = await fetch(`/admin/api/posts/${id}`, {
+      const res = await fetch(`/api/posts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submitData)
@@ -151,7 +139,7 @@ export default function EditPost({ params }: EditPostProps) {
       
       const data = await res.json();
       if (data.success) {
-        window.location.href = '/admin/admin-blog';
+        window.location.href = '/';
       } else {
         alert(data.error || 'Failed to update post');
       }
@@ -172,24 +160,8 @@ export default function EditPost({ params }: EditPostProps) {
 
   return (
     <div className="card">
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
-        <h1 style={{ margin: 0 }}>Edit Post</h1>
-        {autoSaveStatus === 'saving' && (
-          <span style={{ fontSize: '13px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#f59e0b', animation: 'pulse 1s infinite' }} />
-            Auto-saving…
-          </span>
-        )}
-        {autoSaveStatus === 'saved' && (
-          <span style={{ fontSize: '13px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '5px' }}>
-            ✓ Draft auto-saved
-          </span>
-        )}
-        {autoSaveStatus === 'error' && (
-          <span style={{ fontSize: '13px', color: '#ef4444' }}>Auto-save failed</span>
-        )}
-      </div>
-
+      <h1>Edit Post</h1>
+      
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '32px' }}>
           
@@ -269,35 +241,11 @@ export default function EditPost({ params }: EditPostProps) {
             <div className="form-group">
               <label className="form-label">Featured Image (Cover)</label>
               {formData.coverImage && (
-                <div style={{ marginBottom: '8px', position: 'relative', display: 'inline-block', width: '100%' }}>
-                  <img src={formData.coverImage} alt={formData.coverImageAlt || 'Cover'} style={{ width: '100%', borderRadius: '8px', display: 'block' }} />
-                  <button
-                    type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, coverImage: '', coverImageAlt: '' }))}
-                    title="Remove image"
-                    style={{
-                      position: 'absolute', top: '8px', right: '8px',
-                      background: 'rgba(15,15,15,0.75)', color: '#fff',
-                      border: '2px solid rgba(255,255,255,0.4)', borderRadius: '50%',
-                      width: '34px', height: '34px',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: 'pointer', fontSize: '20px', lineHeight: 1,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
-                    }}
-                  >×</button>
+                <div style={{ marginBottom: '8px' }}>
+                  <img src={formData.coverImage} alt="Cover" style={{ width: '100%', borderRadius: '8px' }} />
                 </div>
               )}
               <input type="file" accept="image/*" onChange={uploadCoverImage} className="form-input" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Cover Image Alt Text</label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Describe the image for SEO and accessibility..."
-                value={formData.coverImageAlt}
-                onChange={e => setFormData({...formData, coverImageAlt: e.target.value})}
-              />
             </div>
 
             <div className="form-group">
@@ -356,8 +304,8 @@ export default function EditPost({ params }: EditPostProps) {
               ></textarea>
             </div>
             
-            <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: '16px' }} disabled={saving || loading}>
-              {saving ? 'Updating...' : loading ? 'Loading...' : 'Update Post'}
+            <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: '16px' }} disabled={saving}>
+              {saving ? 'Updating...' : 'Update Post'}
             </button>
           </div>
         </div>

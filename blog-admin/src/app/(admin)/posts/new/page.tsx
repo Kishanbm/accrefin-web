@@ -22,14 +22,13 @@ export default function NewPost() {
     authorId: '',
     excerpt: '',
     coverImage: '',
-    coverImageAlt: '',
     categoryName: '',
     tagNames: ''
   });
 
   // Fetch authors for the dropdown
   useEffect(() => {
-    fetch('/admin/api/authors')
+    fetch('/api/authors')
       .then(res => res.json())
       .then(data => {
         if (data.success && data.data.length > 0) {
@@ -39,17 +38,43 @@ export default function NewPost() {
       });
   }, []);
 
+  const resizeImage = (file: File, maxWidth = 1200, maxHeight = 800, quality = 0.85): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')), 'image/jpeg', quality);
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  };
+
   const uploadCoverImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setLoading(true);
     try {
+      const resized = await resizeImage(file);
       const fd = new FormData();
-      fd.append('file', file);
-      fd.append('folder', 'covers');
-      const res = await fetch('/admin/api/upload', { method: 'POST', body: fd });
+      fd.append('file', new File([resized], 'cover.jpg', { type: 'image/jpeg' }));
+
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
       const data = await res.json();
-      if (!data.success) throw new Error(data.error);
+      if (!res.ok) throw new Error(data.error);
+
       setFormData(prev => ({ ...prev, coverImage: data.url }));
     } catch (error) {
       alert('Error uploading image');
@@ -69,7 +94,7 @@ export default function NewPost() {
     }
 
     try {
-      const res = await fetch('/admin/api/posts', {
+      const res = await fetch('/api/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submitData)
@@ -77,7 +102,7 @@ export default function NewPost() {
       
       const data = await res.json();
       if (data.success) {
-        window.location.href = '/admin/admin-blog';
+        window.location.href = '/';
       } else {
         alert(data.error || 'Failed to create post');
       }
@@ -172,20 +197,10 @@ export default function NewPost() {
               <label className="form-label">Featured Image (Cover)</label>
               {formData.coverImage && (
                 <div style={{ marginBottom: '8px' }}>
-                  <img src={formData.coverImage} alt={formData.coverImageAlt || 'Cover'} style={{ width: '100%', borderRadius: '8px' }} />
+                  <img src={formData.coverImage} alt="Cover" style={{ width: '100%', borderRadius: '8px' }} />
                 </div>
               )}
               <input type="file" accept="image/*" onChange={uploadCoverImage} className="form-input" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Cover Image Alt Text</label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Describe the image for SEO and accessibility..."
-                value={formData.coverImageAlt}
-                onChange={e => setFormData({...formData, coverImageAlt: e.target.value})}
-              />
             </div>
 
             <div className="form-group">

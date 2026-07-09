@@ -9,11 +9,7 @@ import Color from '@tiptap/extension-color';
 import { Mark, mergeAttributes, Extension, Node } from '@tiptap/core';
 import { Plugin, PluginKey, NodeSelection, Selection } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
-import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
-import { TableCell } from '@tiptap/extension-table-cell';
-import { TableHeader } from '@tiptap/extension-table-header';
-import { Bold, Italic, Heading2, List, ListOrdered, ImageIcon, LinkIcon, Code, Edit2, Trash2, Check, X, AlignLeft, AlignCenter, AlignRight, AlignJustify, FileCode, Minus, Table as TableIcon } from 'lucide-react';
+import { Bold, Italic, Heading2, List, ListOrdered, ImageIcon, LinkIcon, Code, Edit2, Trash2, Check, X, AlignLeft, AlignCenter, AlignRight, AlignJustify, FileCode, Minus } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -109,166 +105,8 @@ const IMAGE_POSITIONS = [
 
 const WIDTH_PRESETS = ['25%', '33%', '50%', '66%', '75%', '100%', 'auto'];
 
-const FONT_SIZE_PRESETS = ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '28', '30', '36', '48', '60', '72'];
-
-function FontSizePicker({ value, onChange }: { value: string; onChange: (val: string) => void }) {
-  const [open, setOpen] = useState(false);
-  const [customMode, setCustomMode] = useState(false);
-  const [customValue, setCustomValue] = useState('');
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
-  // Derive numeric display from e.g. "16px" → "16"
-  const numericVal = value ? value.replace('px', '') : '16';
-  const isPreset = FONT_SIZE_PRESETS.includes(numericVal);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as globalThis.Node)) {
-        setOpen(false);
-        setCustomMode(false);
-      }
-    };
-    if (open) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [open]);
-
-  const applyCustom = () => {
-    const parsed = parseFloat(customValue);
-    if (!isNaN(parsed) && parsed > 0) {
-      onChange(`${parsed}px`);
-    }
-    setCustomMode(false);
-    setOpen(false);
-  };
-
-  return (
-    <div ref={wrapperRef} style={{ position: 'relative' }}>
-      <button
-        type="button"
-        onClick={() => { setOpen(o => !o); setCustomMode(false); }}
-        className="toolbar-select"
-        style={{
-          width: '60px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: 'pointer',
-          gap: '4px',
-          padding: '4px 8px',
-          fontSize: '13px',
-        }}
-        title="Font Size"
-      >
-        <span>{numericVal}</span>
-        <span style={{ fontSize: '9px', opacity: 0.6 }}>▾</span>
-      </button>
-
-      {open && (
-        <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 4px)',
-          left: 0,
-          background: 'white',
-          border: '1px solid var(--border-color)',
-          borderRadius: '6px',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-          zIndex: 999,
-          width: '120px',
-          overflow: 'hidden',
-        }}>
-          <div style={{ maxHeight: '240px', overflowY: 'auto' }}>
-            {FONT_SIZE_PRESETS.map(size => (
-              <div
-                key={size}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  onChange(`${size}px`);
-                  setOpen(false);
-                  setCustomMode(false);
-                }}
-                style={{
-                  padding: '7px 14px',
-                  fontSize: '13px',
-                  cursor: 'pointer',
-                  background: numericVal === size ? 'var(--accent-color, #c8420a)' : 'transparent',
-                  color: numericVal === size ? 'white' : 'var(--text-main)',
-                  fontWeight: numericVal === size ? 600 : 400,
-                }}
-                onMouseEnter={e => { if (numericVal !== size) (e.currentTarget as HTMLDivElement).style.background = '#f3f4f6'; }}
-                onMouseLeave={e => { if (numericVal !== size) (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
-              >
-                {size}
-              </div>
-            ))}
-          </div>
-          {/* Custom option */}
-          <div style={{ borderTop: '1px solid var(--border-color)' }}>
-            {customMode ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 8px' }}>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="1"
-                  max="400"
-                  autoFocus
-                  value={customValue}
-                  onChange={e => setCustomValue(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') applyCustom();
-                    if (e.key === 'Escape') { setCustomMode(false); setOpen(false); }
-                  }}
-                  placeholder="e.g. 13.5"
-                  style={{
-                    width: '64px',
-                    padding: '4px 6px',
-                    fontSize: '12px',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '4px',
-                    outline: 'none',
-                  }}
-                />
-                <button
-                  type="button"
-                  onMouseDown={e => { e.preventDefault(); applyCustom(); }}
-                  style={{
-                    background: 'var(--accent-color, #c8420a)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '4px 8px',
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                  }}
-                >
-                  ✓
-                </button>
-              </div>
-            ) : (
-              <div
-                onMouseDown={e => { e.preventDefault(); setCustomMode(true); setCustomValue(isPreset ? numericVal : ''); }}
-                style={{
-                  padding: '7px 14px',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  color: 'var(--accent-color, #c8420a)',
-                  fontWeight: 600,
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = '#fff5f0'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
-              >
-                Custom…
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 // React NodeView component for resizable images with drag handle
-function ResizableImageNodeView({ node, updateAttributes, selected }: any) {
+function ResizableImageNodeView({ node, updateAttributes, selected, editor, getPos }: any) {
   const { src, alt, title, href, width, align } = node.attrs;
   const [isResizing, setIsResizing] = useState(false);
   const startXRef = useRef(0);
@@ -288,9 +126,37 @@ function ResizableImageNodeView({ node, updateAttributes, selected }: any) {
   const getWrapperStyle = (): React.CSSProperties => {
     if (floatSide === 'left') return { float: 'left', marginRight: '20px', marginBottom: '12px', marginTop: '4px', display: 'inline-block' };
     if (floatSide === 'right') return { float: 'right', marginLeft: '20px', marginBottom: '12px', marginTop: '4px', display: 'inline-block' };
-    if (imgAlign === 'left') return { marginLeft: '0', marginRight: 'auto', marginTop: '12px', marginBottom: '4px' };
-    if (imgAlign === 'right') return { marginLeft: 'auto', marginRight: '0', marginTop: '12px', marginBottom: '4px' };
-    return { marginLeft: 'auto', marginRight: 'auto', marginTop: '12px', marginBottom: '4px' };
+    if (imgAlign === 'left') return { display: 'block', marginLeft: '0', marginRight: 'auto', marginTop: '12px', marginBottom: '4px' };
+    if (imgAlign === 'right') return { display: 'block', marginLeft: 'auto', marginRight: '0', marginTop: '12px', marginBottom: '4px' };
+    return { display: 'block', marginLeft: 'auto', marginRight: 'auto', marginTop: '12px', marginBottom: '4px' };
+  };
+
+  // Select node programmatically on click/mousedown
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (typeof getPos === 'function' && editor) {
+      try {
+        const pos = getPos();
+        const { selection } = editor.state;
+        const isCurrentlySelected = selection instanceof NodeSelection && selection.from === pos;
+
+        if (isCurrentlySelected) {
+          // Deselect node by setting a text selection at the same position
+          const tr = editor.state.tr.setSelection(editor.state.selection.constructor.near(editor.state.doc.resolve(pos)));
+          editor.view.dispatch(tr);
+        } else {
+          // Select the image node
+          const tr = editor.state.tr.setSelection(NodeSelection.create(editor.state.doc, pos));
+          editor.view.dispatch(tr);
+        }
+        setTimeout(() => {
+          editor.view.focus();
+        }, 10);
+      } catch (err) {
+        console.error("Failed to select node", err);
+      }
+    }
   };
 
   // Resize drag (right handle)
@@ -355,6 +221,9 @@ function ResizableImageNodeView({ node, updateAttributes, selected }: any) {
         cursor: isResizing ? 'ew-resize' : isInText ? 'grab' : 'pointer',
         userSelect: 'none',
         transition: 'border 0.15s, box-shadow 0.15s',
+      }}
+      onClick={(e) => {
+        handleClick(e);
       }}
       onMouseDown={(e) => {
         if (isInText) {
@@ -573,40 +442,6 @@ const FontSize = Extension.create({
           .run();
       },
     };
-  },
-});
-
-// Custom Line Height Extension — applies line-height to paragraphs and headings
-const LineHeight = Extension.create({
-  name: 'lineHeight',
-  addGlobalAttributes() {
-    return [
-      {
-        types: ['paragraph', 'heading'],
-        attributes: {
-          lineHeight: {
-            default: null,
-            parseHTML: (element: HTMLElement) => element.style.lineHeight || null,
-            renderHTML: (attributes: Record<string, any>) => {
-              if (!attributes.lineHeight) return {};
-              return { style: `line-height: ${attributes.lineHeight}` };
-            },
-          },
-        },
-      },
-    ];
-  },
-  addCommands() {
-    return {
-      setLineHeight: (lineHeight: string) => ({ commands }: { commands: any }) => {
-        return commands.updateAttributes('paragraph', { lineHeight }) &&
-               commands.updateAttributes('heading', { lineHeight });
-      },
-      unsetLineHeight: () => ({ commands }: { commands: any }) => {
-        return commands.updateAttributes('paragraph', { lineHeight: null }) &&
-               commands.updateAttributes('heading', { lineHeight: null });
-      },
-    } as any;
   },
 });
 
@@ -944,123 +779,6 @@ const HTMLBlock = Node.create({
   },
 });
 
-// Grid picker for table insert (rows × cols)
-function TableInsertButton({ editor }: { editor: any }) {
-  const [open, setOpen] = useState(false);
-  const [hovered, setHovered] = useState<{ rows: number; cols: number } | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const ROWS = 8;
-  const COLS = 10;
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as globalThis.Node)) {
-        setOpen(false);
-        setHovered(null);
-      }
-    };
-    if (open) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [open]);
-
-  const insertTable = (rows: number, cols: number) => {
-    editor.chain().focus().insertTable({ rows, cols, withHeaderRow: true }).run();
-    setOpen(false);
-    setHovered(null);
-  };
-
-  return (
-    <div ref={wrapperRef} style={{ position: 'relative', display: 'inline-flex' }}>
-      <button
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        className={`toolbar-btn ${editor.isActive('table') ? 'is-active' : ''}`}
-        title="Insert Table"
-      >
-        <TableIcon size={18} />
-      </button>
-
-      {open && (
-        <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 6px)',
-          left: 0,
-          background: 'white',
-          border: '1px solid var(--border-color)',
-          borderRadius: '8px',
-          boxShadow: '0 6px 20px rgba(0,0,0,0.13)',
-          zIndex: 999,
-          padding: '12px',
-          minWidth: '220px',
-        }}>
-          <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
-            {hovered ? `${hovered.rows} × ${hovered.cols} table` : 'Select size'}
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${COLS}, 20px)`, gap: '3px' }}>
-            {Array.from({ length: ROWS }, (_, r) =>
-              Array.from({ length: COLS }, (_, c) => {
-                const row = r + 1;
-                const col = c + 1;
-                const active = hovered && row <= hovered.rows && col <= hovered.cols;
-                return (
-                  <div
-                    key={`${row}-${col}`}
-                    onMouseEnter={() => setHovered({ rows: row, cols: col })}
-                    onMouseLeave={() => setHovered(null)}
-                    onMouseDown={e => { e.preventDefault(); insertTable(row, col); }}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      borderRadius: '3px',
-                      background: active ? 'var(--accent-color, #c8420a)' : '#e5e7eb',
-                      cursor: 'pointer',
-                      transition: 'background 0.1s',
-                    }}
-                  />
-                );
-              })
-            )}
-          </div>
-          {editor.isActive('table') && (
-            <div style={{ borderTop: '1px solid var(--border-color)', marginTop: '10px', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Table actions</div>
-              {[
-                { label: 'Add row above', fn: () => editor.chain().focus().addRowBefore().run() },
-                { label: 'Add row below', fn: () => editor.chain().focus().addRowAfter().run() },
-                { label: 'Add column left', fn: () => editor.chain().focus().addColumnBefore().run() },
-                { label: 'Add column right', fn: () => editor.chain().focus().addColumnAfter().run() },
-                { label: 'Delete row', fn: () => editor.chain().focus().deleteRow().run() },
-                { label: 'Delete column', fn: () => editor.chain().focus().deleteColumn().run() },
-                { label: 'Delete table', fn: () => editor.chain().focus().deleteTable().run() },
-              ].map(({ label, fn }) => (
-                <button
-                  key={label}
-                  type="button"
-                  onMouseDown={e => { e.preventDefault(); fn(); setOpen(false); }}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    padding: '5px 8px',
-                    borderRadius: '4px',
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    color: label.startsWith('Delete') ? '#ef4444' : 'var(--text-main)',
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#f3f4f6'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'none'; }}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
 const extensions = [
   StarterKit.configure({
     horizontalRule: false,
@@ -1076,13 +794,8 @@ const extensions = [
   Color,
   FontSize,
   FontFamily,
-  LineHeight,
   CustomHorizontalRule,
   HTMLBlock,
-  Table.configure({ resizable: true }),
-  TableRow,
-  TableCell,
-  TableHeader,
 ];
 
 interface TipTapEditorProps {
@@ -1094,8 +807,6 @@ interface TipTapEditorProps {
 export default function TipTapEditor({ content, onChange, toolbarPortalId }: TipTapEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInteractingRef = useRef(false);
-  const [tableCtxMenu, setTableCtxMenu] = useState<{ x: number; y: number } | null>(null);
-  const tableCtxMenuRef = useRef<HTMLDivElement>(null);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkText, setLinkText] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
@@ -1116,7 +827,6 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
 
   // Portal target element state
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
-  const [, forceUpdate] = useState(0);
 
   useEffect(() => {
     if (toolbarPortalId) {
@@ -1133,9 +843,6 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
-    },
-    onSelectionUpdate: () => {
-      forceUpdate(v => v + 1);
     },
     editorProps: {
       handleClickOn(view, pos, node, nodePos, event, direct) {
@@ -1314,14 +1021,13 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
       try {
         const fd = new FormData();
         fd.append('file', file);
-        fd.append('folder', 'blog-images');
-        const res = await fetch('/admin/api/upload', { method: 'POST', body: fd });
+        const res = await fetch('/api/upload', { method: 'POST', body: fd });
         const data = await res.json();
-        if (!data.success) throw new Error(data.error);
+        if (!res.ok) throw new Error(data.error);
         editor?.chain().focus().setImage({ src: data.url }).run();
       } catch (error) {
         console.error('Error uploading image:', error);
-        alert('Error uploading image. Please try again.');
+        alert('Error uploading image.');
       }
     };
     input.click();
@@ -1453,18 +1159,6 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
     }
   };
 
-  // ── TABLE RIGHT-CLICK CONTEXT MENU close handler ──
-  useEffect(() => {
-    const close = (e: MouseEvent | KeyboardEvent) => {
-      if ('key' in e && (e as KeyboardEvent).key !== 'Escape') return;
-      if (tableCtxMenuRef.current && e instanceof MouseEvent && tableCtxMenuRef.current.contains(e.target as globalThis.Node)) return;
-      setTableCtxMenu(null);
-    };
-    document.addEventListener('mousedown', close);
-    document.addEventListener('keydown', close);
-    return () => { document.removeEventListener('mousedown', close); document.removeEventListener('keydown', close); };
-  }, []);
-
   if (!editor) return null;
 
   const { selection: activeSelection } = editor.state;
@@ -1529,18 +1223,17 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
         >
           <FileCode size={18} />
         </button>
-        <button
-          type="button"
-          onClick={() => (editor.chain().focus() as any).setHorizontalRule().run()}
+        <button 
+          type="button" 
+          onClick={() => (editor.chain().focus() as any).setHorizontalRule().run()} 
           className="toolbar-btn"
           title="Insert Divider Line"
         >
           <Minus size={18} />
         </button>
-        <TableInsertButton editor={editor} />
-
+        
         <div style={{ width: '1px', background: 'var(--border-color)', margin: '0 8px' }}></div>
-
+        
         {/* Alignment Buttons */}
         <button 
           type="button" 
@@ -1606,43 +1299,29 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
 
         <div style={{ width: '1px', background: 'var(--border-color)', margin: '0 8px' }}></div>
 
-        {/* Font Size Picker */}
-        <FontSizePicker
-          value={editor.getAttributes('textStyle').fontSize || '16px'}
-          onChange={(size) => {
-            (editor.chain().focus() as any).setFontSize(size).run();
-          }}
-        />
-
-        <div style={{ width: '1px', background: 'var(--border-color)', margin: '0 8px' }}></div>
-
-        {/* Line Spacing Select */}
+        {/* Font Size Select */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <select
             className="toolbar-select"
-            value={
-              editor.getAttributes('paragraph').lineHeight ||
-              editor.getAttributes('heading').lineHeight ||
-              'default'
-            }
+            value={editor.getAttributes('textStyle').fontSize || '16px'}
             onChange={(e) => {
-              const val = e.target.value;
-              if (val === 'default') {
-                (editor.chain().focus() as any).unsetLineHeight().run();
+              const size = e.target.value;
+              if (size === 'default') {
+                (editor.chain().focus() as any).unsetFontSize().run();
               } else {
-                (editor.chain().focus() as any).setLineHeight(val).run();
+                (editor.chain().focus() as any).setFontSize(size).run();
               }
             }}
-            title="Line Spacing"
-            style={{ width: '90px' }}
+            title="Font Size"
           >
-            <option value="default">Spacing</option>
-            <option value="1">Single</option>
-            <option value="1.15">1.15</option>
-            <option value="1.5">1.5</option>
-            <option value="2">Double</option>
-            <option value="2.5">2.5</option>
-            <option value="3">Triple</option>
+            <option value="12px">12px</option>
+            <option value="14px">14px</option>
+            <option value="16px">16px (Default)</option>
+            <option value="18px">18px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="30px">30px</option>
+            <option value="36px">36px</option>
           </select>
         </div>
 
@@ -1906,24 +1585,6 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
     </div>
   );
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (!target.closest('td, th')) return;
-    e.preventDefault();
-    setTableCtxMenu({ x: e.clientX, y: e.clientY });
-  };
-
-  const tableActions = [
-    { label: 'Insert row above', fn: () => editor.chain().focus().addRowBefore().run(), danger: false },
-    { label: 'Insert row below', fn: () => editor.chain().focus().addRowAfter().run(), danger: false },
-    { label: 'Insert column to the left', fn: () => editor.chain().focus().addColumnBefore().run(), danger: false },
-    { label: 'Insert column to the right', fn: () => editor.chain().focus().addColumnAfter().run(), danger: false },
-    null,
-    { label: 'Delete row', fn: () => editor.chain().focus().deleteRow().run(), danger: true },
-    { label: 'Delete column', fn: () => editor.chain().focus().deleteColumn().run(), danger: true },
-    { label: 'Delete table', fn: () => editor.chain().focus().deleteTable().run(), danger: true },
-  ];
-
   return (
     <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
       
@@ -2113,32 +1774,9 @@ export default function TipTapEditor({ content, onChange, toolbarPortalId }: Tip
       {/* ── TOP EDITOR TOOLBAR PORTALED OR INLINE ── */}
       {portalElement ? createPortal(toolbarAndModal, portalElement) : toolbarAndModal}
       
-      <div className={portalElement ? 'editor-content-only' : ''} onContextMenu={handleContextMenu}>
+      <div className={portalElement ? 'editor-content-only' : ''}>
         <EditorContent editor={editor} />
       </div>
-
-      {tableCtxMenu && (
-        <div
-          ref={tableCtxMenuRef}
-          className="table-context-menu"
-          style={{ top: tableCtxMenu.y, left: tableCtxMenu.x }}
-        >
-          {tableActions.map((action, i) =>
-            action === null ? (
-              <div key={`div-${i}`} className="table-context-menu-divider" />
-            ) : (
-              <button
-                key={action.label}
-                type="button"
-                className={`table-context-menu-item${action.danger ? ' danger' : ''}`}
-                onMouseDown={e => { e.preventDefault(); action.fn(); setTableCtxMenu(null); }}
-              >
-                {action.label}
-              </button>
-            )
-          )}
-        </div>
-      )}
     </div>
   );
 }
