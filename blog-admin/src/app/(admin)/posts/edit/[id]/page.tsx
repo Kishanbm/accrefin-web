@@ -139,7 +139,7 @@ export default function EditPost({ params }: EditPostProps) {
       
       const data = await res.json();
       if (data.success) {
-        window.location.href = '/';
+        window.location.href = '/admin/admin-blog';
       } else {
         alert(data.error || 'Failed to update post');
       }
