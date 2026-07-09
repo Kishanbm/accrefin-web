@@ -71,7 +71,7 @@ export default function NewPost() {
       const fd = new FormData();
       fd.append('file', new File([resized], 'cover.jpg', { type: 'image/jpeg' }));
 
-      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const res = await fetch('/admin/api/upload', { method: 'POST', body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
