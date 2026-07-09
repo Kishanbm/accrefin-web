@@ -1,22 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getTenantId } from '@/lib/session';
 
-interface Props {
-  params: Promise<{ id: string }>;
-}
-
-// GET a single post by ID (scoped to tenant)
-export async function GET(request: NextRequest, { params }: Props) {
+// GET a single post by ID
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const tenantId = await getTenantId(request);
-    if (!tenantId) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { id } = await params;
-    const post = await prisma.post.findFirst({
-      where: { id, tenantId },
+    const post = await prisma.post.findUnique({
+      where: { id },
       include: { author: true, category: true, tags: true },
     });
 
@@ -31,45 +21,25 @@ export async function GET(request: NextRequest, { params }: Props) {
   }
 }
 
-// PUT update a post by ID (scoped to tenant)
-export async function PUT(request: NextRequest, { params }: Props) {
+// PUT update a post by ID
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const tenantId = await getTenantId(request);
-    if (!tenantId) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { id } = await params;
-    
-    // Ensure the post exists and belongs to the tenant
-    const existingPost = await prisma.post.findFirst({
-      where: { id, tenantId }
-    });
-
-    if (!existingPost) {
-      return NextResponse.json({ success: false, error: 'Post not found' }, { status: 404 });
-    }
-
     const body = await request.json();
 
     let categoryUpdate: any = undefined;
-    let categoryIdUpdate: any = undefined;
 
     if (body.categoryName !== undefined) {
       if (body.categoryName && body.categoryName.trim() !== '') {
         const catName = body.categoryName.trim();
         categoryUpdate = {
           connectOrCreate: {
-            where: { tenantId_name: { tenantId, name: catName } },
-            create: { 
-              name: catName, 
-              slug: catName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
-              tenantId
-            }
+            where: { name: catName },
+            create: { name: catName, slug: catName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') }
           }
         };
       } else {
-        categoryIdUpdate = null; // Clear category link if empty
+        categoryUpdate = { disconnect: true };
       }
     }
 
@@ -79,40 +49,43 @@ export async function PUT(request: NextRequest, { params }: Props) {
       tagsUpdate = {
         set: [],
         connectOrCreate: tagsArray.map((tagName: string) => ({
-          where: { tenantId_name: { tenantId, name: tagName } },
-          create: { 
-            name: tagName, 
-            slug: tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
-            tenantId
-          }
+          where: { name: tagName },
+          create: { name: tagName, slug: tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') }
         }))
       };
     }
 
-    // Ensure slug is unique within tenant (excluding current post)
-    let slug = body.slug;
-    if (slug) {
+    // Determine slug to use — never auto-update to empty, never conflict with another post
+    let slugToSet: string | undefined = undefined;
+    if (body.slug && body.slug.trim()) {
+      const trimmedSlug = body.slug.trim();
       const conflict = await prisma.post.findFirst({
-        where: { tenantId, slug, id: { not: id } }
+        where: { slug: trimmedSlug, id: { not: id } },
+        select: { id: true },
       });
       if (conflict) {
-        slug = `${slug}-${Date.now()}`;
+        return NextResponse.json({ success: false, error: 'A post with this slug already exists' }, { status: 409 });
       }
+      slugToSet = trimmedSlug;
     }
+    // If body.slug is empty/missing, slugToSet remains undefined → Prisma won't touch the slug field
 
     const post = await prisma.post.update({
       where: { id },
       data: {
         title: body.title,
-        slug,
+        slug: slugToSet,
         content: body.content,
         excerpt: body.excerpt,
         coverImage: body.coverImage,
+        coverImageAlt: body.coverImageAlt !== undefined ? (body.coverImageAlt || null) : undefined,
         seoTitle: body.seoTitle,
         seoDescription: body.seoDescription,
         status: body.status,
+        author: body.authorId ? {
+          connect: { id: body.authorId }
+        } : undefined,
         category: categoryUpdate,
-        categoryId: categoryIdUpdate,
         tags: tagsUpdate,
         publishedAt: body.publishedAt ? new Date(body.publishedAt) : undefined,
       },
@@ -121,29 +94,20 @@ export async function PUT(request: NextRequest, { params }: Props) {
     return NextResponse.json({ success: true, data: post });
   } catch (error: any) {
     console.error('Failed to update post:', error);
-    return NextResponse.json({ success: false, error: 'Failed to update post' }, { status: 500 });
+    if (error.code === 'P2025') {
+      return NextResponse.json({ success: false, error: 'Post not found' }, { status: 404 });
+    }
+    if (error.code === 'P2002') {
+      return NextResponse.json({ success: false, error: 'A post with this slug already exists' }, { status: 409 });
+    }
+    return NextResponse.json({ success: false, error: 'Failed to update post', detail: error.message }, { status: 500 });
   }
 }
 
-// DELETE a post by ID (scoped to tenant)
-export async function DELETE(request: NextRequest, { params }: Props) {
+// DELETE a post by ID
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const tenantId = await getTenantId(request);
-    if (!tenantId) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { id } = await params;
-
-    // Ensure the post exists and belongs to the tenant
-    const existingPost = await prisma.post.findFirst({
-      where: { id, tenantId }
-    });
-
-    if (!existingPost) {
-      return NextResponse.json({ success: false, error: 'Post not found' }, { status: 404 });
-    }
-
     await prisma.post.delete({
       where: { id },
     });
@@ -151,6 +115,9 @@ export async function DELETE(request: NextRequest, { params }: Props) {
     return NextResponse.json({ success: true, message: 'Post deleted successfully' });
   } catch (error: any) {
     console.error('Failed to delete post:', error);
+    if (error.code === 'P2025') {
+      return NextResponse.json({ success: false, error: 'Post not found' }, { status: 404 });
+    }
     return NextResponse.json({ success: false, error: 'Failed to delete post' }, { status: 500 });
   }
 }
