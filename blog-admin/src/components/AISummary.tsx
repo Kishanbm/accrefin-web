@@ -28,7 +28,7 @@ export default function AISummary({ postId, initialSummary = null }: AISummaryPr
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/posts/${postId}/ai-summary`, {
+      const response = await fetch(`/admin/api/posts/${postId}/ai-summary`, {
         method: 'POST',
       });
       const resData = await response.json();
