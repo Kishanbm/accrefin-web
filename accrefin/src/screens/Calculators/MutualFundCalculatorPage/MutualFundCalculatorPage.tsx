@@ -3,6 +3,36 @@ import { Button } from '../../../components/ui/button';
 import { Card, CardContent } from '../../../components/ui/card';
 import { CalculatorIcon, CheckIcon } from 'lucide-react';
 
+const RoomGrid = ({ color = "rgba(180,210,240,0.30)" }: { color?: string }) => {
+  const W = 1440, H = 900, fw = W * 0.45, fh = H * 0.45;
+  const fx = (W - fw) / 2, fy = (H - fh) / 2, fx2 = fx + fw, fy2 = fy + fh, n = 10;
+  const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    lines.push({ x1: W * t, y1: 0, x2: fx + fw * t, y2: fy });
+    lines.push({ x1: W * t, y1: H, x2: fx + fw * t, y2: fy2 });
+    lines.push({ x1: 0, y1: H * t, x2: fx, y2: fy + fh * t });
+    lines.push({ x1: W, y1: H * t, x2: fx2, y2: fy + fh * t });
+  }
+  for (let i = 1; i < n; i++) {
+    const t = i / n;
+    lines.push({ x1: fx * t, y1: fy * t, x2: W - fx * t, y2: fy * t });
+    lines.push({ x1: fx * t, y1: H - fy * t, x2: W - fx * t, y2: H - fy * t });
+    lines.push({ x1: fx * t, y1: fy * t, x2: fx * t, y2: H - fy * t });
+    lines.push({ x1: W - fx * t, y1: fy * t, x2: W - fx * t, y2: H - fy * t });
+    lines.push({ x1: fx + fw * t, y1: fy, x2: fx + fw * t, y2: fy2 });
+    lines.push({ x1: fx, y1: fy + fh * t, x2: fx2, y2: fy + fh * t });
+  }
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        {lines.map((l, i) => <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={color} strokeWidth="0.7" />)}
+        <rect x={fx} y={fy} width={fw} height={fh} fill="none" stroke={color} strokeWidth="0.7" />
+      </svg>
+    </div>
+  );
+};
+
 export const MutualFundCalculatorPage = (): JSX.Element => {
   const [monthlySip, setMonthlySip] = useState(5000);
   const [annualReturn, setAnnualReturn] = useState(12);
@@ -35,26 +65,59 @@ export const MutualFundCalculatorPage = (): JSX.Element => {
 
   const maturity = calculateMaturity();
 
+  const headingFont = "font-['Power_Grotesk',_'DM_Sans',_sans-serif]";
+  const bodyFont = "font-['DM_Sans',_sans-serif]";
+
   return (
     <div className="min-h-screen bg-white">
-      <section id="hero-section" className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-16">
-        <div className="container mx-auto max-w-7xl px-4 text-center">
-          <div className="mb-8">
-            <nav className="flex items-center space-x-2 text-sm justify-center">
-              <a href="/" className="text-blue-600 hover:text-blue-800">Home</a>
+      <section id="hero-section" className="bg-white relative overflow-hidden">
+        <RoomGrid />
+        <div className="container mx-auto max-w-7xl px-6 pt-8 pb-0 relative z-10">
+          <div className="flex justify-center mb-10">
+            <div className="flex items-center gap-2 border border-gray-300 rounded-full px-5 py-2.5 bg-gray-50 backdrop-blur-sm">
+              <svg className="w-5 h-5 text-[#0050B2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span className={`text-gray-700 text-sm ${bodyFont}`}>India's most trusted platform</span>
+            </div>
+          </div>
+          <div className="mb-6">
+            <nav className={`flex items-center space-x-2 text-sm ${bodyFont}`}>
+              <a href="/" className="text-gray-600 hover:text-gray-800">Home</a>
               <span className="text-gray-400">/</span>
-              <a href="/calculators" className="text-blue-600 hover:text-blue-800">Calculators</a>
+              <a href="/calculators" className="text-gray-600 hover:text-gray-800">Calculators</a>
               <span className="text-gray-400">/</span>
               <span className="text-gray-600">Mutual Fund Calculator</span>
             </nav>
           </div>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-[#0050B2] to-[#003d8a] rounded-2xl flex items-center justify-center shadow-lg">
-              <CalculatorIcon className="w-8 h-8 text-white" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center pb-14">
+            <h1 className={`text-4xl lg:text-5xl xl:text-[56px] font-normal text-gray-900 leading-[1.15] tracking-tight ${headingFont}`}>
+              Mutual Fund SIP<br />Calculator
+            </h1>
+            <p className={`text-xl text-gray-600 leading-relaxed ${bodyFont} font-medium`}>
+              Estimate your future corpus with disciplined monthly SIP investing at your expected returns.
+            </p>
+          </div>
+        </div>
+        <div className="bg-[#0e396d] border-t border-white/10 relative z-10">
+          <div className="container mx-auto max-w-7xl px-4">
+            <div className="flex items-center justify-between flex-wrap lg:flex-nowrap">
+              {[
+                { title: "15%+", desc: "Long-term SIP returns" },
+                { title: "₹500/mo", desc: "Start small, grow big" },
+                { title: "SEBI", desc: "Regulated & safe" },
+                { title: "Tax Benefits", desc: "ELSS tax savings" }
+              ].map((item, index, arr) => (
+                <React.Fragment key={item.title}>
+                  <div className="flex flex-col items-start gap-4 py-10 px-10 flex-1">
+                    <h3 className={`font-normal text-white text-[22px] leading-[1.3] ${headingFont}`}>{item.title}</h3>
+                    <p className={`text-[#a0cfff] text-base font-medium leading-[1.3] ${bodyFont}`}>{item.desc}</p>
+                  </div>
+                  {index < arr.length - 1 && <div className="hidden lg:block w-px h-[100px] bg-white/15 flex-shrink-0" />}
+                </React.Fragment>
+              ))}
             </div>
           </div>
-          <h1 className="text-4xl font-bold mb-4">Mutual Fund SIP Calculator</h1>
-          <p className="text-lg text-gray-600">Estimate corpus for a monthly SIP at an expected return.</p>
         </div>
       </section>
 

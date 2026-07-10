@@ -1007,7 +1007,7 @@ export const PersonalLoanPage = (): JSX.Element => {
         <div className="bg-[#0050B2] relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/20">
             {[
-              { value: "25,000+", label: "Happy Customers" },
+              { value: "4,000+", label: "Happy Customers" },
               { value: "98%", label: "Approval Rate" },
               { value: "4.9/5", label: "Customer Rating" },
               { value: "24hrs", label: "Average Processing" }

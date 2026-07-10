@@ -1,0 +1,1 @@
+export { LoanAgainstPropertyPage } from "./LoanAgainstPropertyPage";

@@ -7,6 +7,8 @@ import { PersonalLoanPage } from "./screens/LoanProducts/PersonalLoanPage/index.
 import { EducationLoanPage } from "./screens/LoanProducts/EducationLoanPage/index.ts";
 import { CarLoanPage } from "./screens/LoanProducts/CarLoanPage/index.ts";
 import { MachineryLoanPage } from "./screens/LoanProducts/MachineryLoanPage/index.ts";
+import { LoanAgainstPropertyPage } from "./screens/LoanProducts/LoanAgainstPropertyPage/index.ts";
+import { GoldLoanPage } from "./screens/LoanProducts/GoldLoanPage/index.ts";
 import { PartnerWithUsPage } from "./screens/AboutUs/PartnerWithUsPage/index.ts";
 import { ContactUsPage } from "./screens/ContactUsPage";
 import { HomeLoanCalculatorPage } from "./screens/Calculators/HomeLoanCalculatorPage";
@@ -96,6 +98,26 @@ createRoot(document.getElementById("app") as HTMLElement).render(
               <>
                 <HeaderSection />
                 <MachineryLoanPage />
+                <FooterSection />
+              </>
+            }
+          />
+          <Route
+            path={ROUTES.LOAN_AGAINST_PROPERTY}
+            element={
+              <>
+                <HeaderSection />
+                <LoanAgainstPropertyPage />
+                <FooterSection />
+              </>
+            }
+          />
+          <Route
+            path={ROUTES.GOLD_LOAN}
+            element={
+              <>
+                <HeaderSection />
+                <GoldLoanPage />
                 <FooterSection />
               </>
             }

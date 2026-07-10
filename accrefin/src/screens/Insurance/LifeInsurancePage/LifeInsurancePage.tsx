@@ -6,6 +6,36 @@ import { Badge } from "../../../components/ui/badge";
 import { Separator } from "../../../components/ui/separator";
 import { CheckIcon, StarIcon, ShieldIcon, ClockIcon, FileTextIcon, ChevronDownIcon, ChevronUpIcon, TrendingUpIcon, ZapIcon, GlobeIcon, LockIcon, HeartIcon as HeartPulseIcon, Activity } from "lucide-react";
 
+const RoomGrid = ({ color = "rgba(180,210,240,0.30)" }: { color?: string }) => {
+  const W = 1440, H = 900, fw = W * 0.45, fh = H * 0.45;
+  const fx = (W - fw) / 2, fy = (H - fh) / 2, fx2 = fx + fw, fy2 = fy + fh, n = 10;
+  const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    lines.push({ x1: W * t, y1: 0, x2: fx + fw * t, y2: fy });
+    lines.push({ x1: W * t, y1: H, x2: fx + fw * t, y2: fy2 });
+    lines.push({ x1: 0, y1: H * t, x2: fx, y2: fy + fh * t });
+    lines.push({ x1: W, y1: H * t, x2: fx2, y2: fy + fh * t });
+  }
+  for (let i = 1; i < n; i++) {
+    const t = i / n;
+    lines.push({ x1: fx * t, y1: fy * t, x2: W - fx * t, y2: fy * t });
+    lines.push({ x1: fx * t, y1: H - fy * t, x2: W - fx * t, y2: H - fy * t });
+    lines.push({ x1: fx * t, y1: fy * t, x2: fx * t, y2: H - fy * t });
+    lines.push({ x1: W - fx * t, y1: fy * t, x2: W - fx * t, y2: H - fy * t });
+    lines.push({ x1: fx + fw * t, y1: fy, x2: fx + fw * t, y2: fy2 });
+    lines.push({ x1: fx, y1: fy + fh * t, x2: fx2, y2: fy + fh * t });
+  }
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        {lines.map((l, i) => <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={color} strokeWidth="0.7" />)}
+        <rect x={fx} y={fy} width={fw} height={fh} fill="none" stroke={color} strokeWidth="0.7" />
+      </svg>
+    </div>
+  );
+};
+
 export const LifeInsurancePage = (): JSX.Element => {
   const [sumAssured, setSumAssured] = useState(1000000);
   const [age, setAge] = useState(35);
@@ -149,13 +179,17 @@ export const LifeInsurancePage = (): JSX.Element => {
     { question: "Are life insurance premiums tax deductible?", answer: "Yes, under Section 80C and certain maturity returns under 10D may be tax-free." }
   ];
 
+  const headingFont = "font-['Power_Grotesk',_'DM_Sans',_sans-serif]";
+  const bodyFont = "font-['DM_Sans',_sans-serif]";
+
   return (
     <div className="min-h-screen bg-white">
-      <section id="hero-section" className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-16 relative overflow-hidden">
-        <div className="container mx-auto max-w-7xl px-4 relative z-10">
+      <section id="hero-section" className="bg-white relative overflow-hidden">
+        <RoomGrid />
+        <div className="container mx-auto max-w-7xl px-4 relative z-10 pt-8">
           <div className="mb-8">
-            <nav className="flex items-center space-x-2 text-sm">
-              <a href="/" className="text-blue-600 hover:text-blue-800 transition-colors">Home</a>
+            <nav className={`flex items-center space-x-2 text-sm ${bodyFont}`}>
+              <a href="/" className="text-gray-600 hover:text-gray-800 transition-colors">Home</a>
               <span className="text-gray-400">/</span>
               <span className="text-gray-600">Life Insurance</span>
             </nav>
@@ -164,17 +198,23 @@ export const LifeInsurancePage = (): JSX.Element => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div>
-                <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">Protect Your Family with <br /><span className="bg-gradient-to-r from-[#0050B2] to-[#003d8a] bg-clip-text text-transparent">Life Insurance</span></h1>
+                <h1 className={`text-4xl lg:text-5xl font-normal leading-tight mb-6 text-gray-900 ${headingFont}`}>Protect Your Family<br />with Life Insurance</h1>
                 <p className="text-xl text-gray-600 leading-relaxed mb-8">Flexible term and whole life plans to secure your family's future with tax benefits.</p>
               </div>
 
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 gap-3">
                 {lifeFeatures.map((feature, idx) => (
-                  <Card key={idx}><CardContent className="p-6 text-center"><div className={`w-14 h-14 ${feature.bgColor} rounded-xl flex items-center justify-center mx-auto mb-4`}>{feature.icon}</div><h3 className="font-bold">{feature.title}</h3><p className="text-sm text-gray-600">{feature.description}</p></CardContent></Card>
+                  <div key={idx} className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl">
+                    <div className={`w-10 h-10 ${feature.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                      {feature.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm leading-tight">{feature.title}</h3>
+                      <p className="text-xs text-gray-500 mt-0.5">{feature.description}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
-
-              <div className="text-sm text-gray-500 italic">Last updated: 31 October, 2025</div>
             </div>
 
             <div className="lg:pl-8">
@@ -219,19 +259,30 @@ export const LifeInsurancePage = (): JSX.Element => {
             </div>
           </div>
 
-          <div className="mt-16 pt-12 border-t border-gray-200 bg-white rounded-2xl p-8 shadow-lg">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
-              <div className="lg:col-span-1"><div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4 shadow-md border border-gray-100"><div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" /></svg></div><div><div className="text-sm font-semibold">Trusted</div><div className="text-sm font-bold">Life Coverage</div></div></div></div>
-
-              <div className="lg:col-span-1 text-center"><div className="text-4xl font-bold">4.5<span className="text-2xl text-gray-500">/5</span></div><div className="flex justify-center">{[...Array(4)].map((_,i)=>(<StarIcon key={i} className="w-5 h-5 text-yellow-400"/>))}</div></div>
-
-              <div className="lg:col-span-3 grid grid-cols-3 gap-8"><div className="text-center"><div className="text-3xl font-bold">1M+</div><div className="text-sm text-gray-500 italic">Protected Families</div></div><div className="text-center"><div className="text-3xl font-bold">30+</div><div className="text-sm text-gray-500 italic">Insurer Partners</div></div><div className="text-center"><div className="text-3xl font-bold">99%</div><div className="text-sm text-gray-500 italic">Claim Settlement</div></div></div>
-            </div>
-          </div>
         </div>
       </section>
+      <div className="bg-[#0e396d] border-t border-white/10">
+        <div className="container mx-auto max-w-7xl px-4">
+          <div className="flex items-center justify-between flex-wrap lg:flex-nowrap">
+            {[
+              { title: "₹1Cr Cover", desc: "High sum assured" },
+              { title: "₹500/mo", desc: "Low premiums" },
+              { title: "98.5% CSR", desc: "Claim settled" },
+              { title: "Tax Free", desc: "Sec 80C & 10D" },
+            ].map((item, index, arr) => (
+              <React.Fragment key={item.title}>
+                <div className="flex flex-col items-start gap-4 py-10 px-10 flex-1">
+                  <h3 className={`font-normal text-white text-[22px] leading-[1.3] ${headingFont}`}>{item.title}</h3>
+                  <p className={`text-[#a0cfff] text-base font-medium leading-[1.3] ${bodyFont}`}>{item.desc}</p>
+                </div>
+                {index < arr.length - 1 && <div className="hidden lg:block w-px h-[100px] bg-white/15 flex-shrink-0" />}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
 
-      <div className={`${isTabSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg' : 'relative'} bg-white border-b border-gray-200 transition-all duration-300`}>
+      <div className={`${isTabSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg' : 'relative mt-4'} bg-white border-b border-gray-200 transition-all duration-300`}>
         <div className="container mx-auto max-w-7xl px-4"><div className="flex items-center justify-center"><div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">{tabItems.map((tab)=>(<button key={tab.id} onClick={()=>scrollToSection(tab.id)} className={`px-6 py-3 text-sm font-medium rounded-lg ${activeTab===tab.id? 'bg-[#0050B2] text-white' : 'text-gray-600 hover:text-[#0050B2]'}`}>{tab.label}</button>))}</div></div></div>
       </div>
 

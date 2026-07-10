@@ -10,7 +10,7 @@ const stats = [
     description: "Trusted by millions of customers across India for their financial needs",
   },
   {
-    number: "275+",
+    number: "135+",
     label: "Bank & NBFC Partners",
     description: "Extensive network ensuring you get the best deals from top lenders",
   },

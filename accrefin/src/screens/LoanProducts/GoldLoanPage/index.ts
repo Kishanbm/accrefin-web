@@ -1,0 +1,1 @@
+export { GoldLoanPage } from "./GoldLoanPage";

@@ -984,7 +984,7 @@ export const BusinessLoanPage = (): JSX.Element => {
           <div className="container mx-auto max-w-7xl px-4">
             <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/20">
               {[
-                { value: "25,000+", label: "Happy Customers" },
+                { value: "4,000+", label: "Happy Customers" },
                 { value: "98%", label: "Approval Rate" },
                 { value: "4.9/5", label: "Customer Rating" },
                 { value: "24hrs", label: "Average Processing" }

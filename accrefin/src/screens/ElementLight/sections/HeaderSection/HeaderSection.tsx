@@ -14,12 +14,12 @@ export const HeaderSection = (): JSX.Element => {
       dropdownItems: [
         { label: "Personal Loan", href: "/personal-loan" },
         { label: "Business Loan", href: "/business-loan" },
-        { label: "Car Loan", href: "/car-loan" },
-        { label: "Education Loan", href: "/education-loan" },
-        { label: "Machinery Loan", href: "/machinery-loan" },
         { label: "Home Loan", href: "/home-loan" },
         { label: "Loan Against Property", href: "/loan-against-property" },
+        { label: "Education Loan", href: "/education-loan" },
+        { label: "Car Loan", href: "/car-loan" },
         { label: "Gold Loan", href: "/gold-loans" },
+        { label: "Machinery Loan", href: "/machinery-loan" },
       ],
     },
     {

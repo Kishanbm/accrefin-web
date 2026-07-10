@@ -7,6 +7,8 @@ export const ROUTES = {
     CAR_LOAN: '/car-loan',
     EDUCATION_LOAN: '/education-loan',
     MACHINERY_LOAN: '/machinery-loan',
+    LOAN_AGAINST_PROPERTY: '/loan-against-property',
+    GOLD_LOAN: '/gold-loans',
     HEALTH_INSURANCE: '/health-insurance',
     VEHICLE_INSURANCE: '/vehicle-insurance',
     LIFE_INSURANCE: '/life-insurance',

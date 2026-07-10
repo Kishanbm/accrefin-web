@@ -4,15 +4,13 @@ import { Card, CardContent } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Badge } from "../../../components/ui/badge";
 import { Separator } from "../../../components/ui/separator";
-import { ROUTES } from "../../../constants/routes";
-import { useNavigate } from "react-router-dom";
-import { CheckIcon, StarIcon, UserIcon, ShieldIcon, FileTextIcon, CreditCardIcon, BanknoteIcon as BanknotesIcon, ChevronDownIcon, ChevronUpIcon, TrendingUpIcon, ZapIcon, LockIcon, HomeIcon, CalculatorIcon } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../../constants/routes';
+import { CheckIcon, StarIcon, UserIcon, ShieldIcon, ClockIcon, FileTextIcon, CreditCardIcon, BanknoteIcon as BanknotesIcon, ChevronDownIcon, ChevronUpIcon, TrendingUpIcon, ZapIcon, LockIcon, CalendarIcon, GemIcon, RefreshCwIcon } from "lucide-react";
 
-/* ─── Perspective Grid SVG shared across sections ─── */
 const PerspectiveGrid = ({ color = "rgba(255,255,255,0.10)", className = "" }: { color?: string; className?: string }) => (
   <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
     <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Horizontal lines with perspective */}
       {Array.from({ length: 18 }).map((_, i) => {
         const y = 50 + i * 50;
         const perspectiveOffset = (i - 9) * 3;
@@ -20,7 +18,6 @@ const PerspectiveGrid = ({ color = "rgba(255,255,255,0.10)", className = "" }: {
           <line key={`h-${i}`} x1={-20 + perspectiveOffset} y1={y} x2={1460 - perspectiveOffset} y2={y} stroke={color} strokeWidth="0.8" />
         );
       })}
-      {/* Vertical lines with perspective */}
       {Array.from({ length: 22 }).map((_, i) => {
         const x = -20 + i * 70;
         const topOffset = (i - 11) * 4;
@@ -28,7 +25,6 @@ const PerspectiveGrid = ({ color = "rgba(255,255,255,0.10)", className = "" }: {
           <line key={`v-${i}`} x1={x + topOffset} y1={0} x2={x - topOffset} y2={900} stroke={color} strokeWidth="0.8" />
         );
       })}
-      {/* Diagonal perspective lines from corners */}
       <line x1="0" y1="0" x2="720" y2="450" stroke={color} strokeWidth="0.5" />
       <line x1="1440" y1="0" x2="720" y2="450" stroke={color} strokeWidth="0.5" />
       <line x1="0" y1="900" x2="720" y2="450" stroke={color} strokeWidth="0.5" />
@@ -37,7 +33,6 @@ const PerspectiveGrid = ({ color = "rgba(255,255,255,0.10)", className = "" }: {
   </div>
 );
 
-/* ─── Tunnel/Room Perspective Grid for dark sections ─── */
 const TunnelGrid = ({ color = "rgba(255,255,255,0.18)" }: { color?: string }) => {
   const W = 1440, H = 900;
   const vx = W / 2, vy = H / 2;
@@ -100,21 +95,35 @@ const RoomGrid = ({ color = "rgba(180,210,240,0.30)" }: { color?: string }) => {
   );
 };
 
-export const HomeLoanPage = (): JSX.Element => {
-  const [loanAmount, setLoanAmount] = useState(3000000);
-  const [tenure, setTenure] = useState(240);
-  const [interestRate, setInterestRate] = useState(8.5);
-  const [formStatus, setFormStatus] = useState<'FORM' | 'LOADING' | 'SUCCESS'>('FORM');
+export const GoldLoanPage = (): JSX.Element => {
+  const [goldWeight, setGoldWeight] = useState(50);
+  const [goldPurity, setGoldPurity] = useState(22);
+  const [tenure, setTenure] = useState(12);
+  const [interestRate, setInterestRate] = useState(10.5);
   const [activeTab, setActiveTab] = useState("overview");
   const [isTabSticky, setIsTabSticky] = useState(false);
   const [expandedDoc, setExpandedDoc] = useState<string | null>(null);
-  const [partnersVisible, setPartnersVisible] = useState(3);
+  const [formStatus, setFormStatus] = useState<'FORM' | 'LOADING' | 'SUCCESS'>('FORM');
   const navigate = useNavigate();
 
-  
+  const GOLD_RATE_PER_GRAM = 6200; // approx ₹6,200 per gram for 24K
 
+  const calculateLoanAmount = () => {
+    const purityMultiplier = goldPurity / 24;
+    const goldValue = goldWeight * GOLD_RATE_PER_GRAM * purityMultiplier;
+    return Math.round(goldValue * 0.75); // LTV up to 75%
+  };
 
-  // Sticky tab navigation effect
+  const loanAmount = calculateLoanAmount();
+
+  const calculateInterest = () => {
+    const monthlyRate = interestRate / 100 / 12;
+    return Math.round(loanAmount * monthlyRate * tenure);
+  };
+
+  const totalInterest = calculateInterest();
+  const totalPayable = loanAmount + totalInterest;
+
   useEffect(() => {
     const handleScroll = () => {
       const heroSection = document.getElementById('hero-section');
@@ -122,11 +131,8 @@ export const HomeLoanPage = (): JSX.Element => {
         const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
         setIsTabSticky(window.scrollY > heroBottom - 100);
       }
-
-      // Update active tab based on scroll position
       const sections = ['overview', 'features', 'eligibility', 'documents', 'calculator', 'fees', 'faqs'];
       const scrollPosition = window.scrollY + 150;
-
       for (let i = sections.length - 1; i >= 0; i--) {
         const element = document.getElementById(sections[i]);
         if (element && element.offsetTop <= scrollPosition) {
@@ -135,75 +141,34 @@ export const HomeLoanPage = (): JSX.Element => {
         }
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculate EMI with proper formula
-  const calculateEMI = () => {
-    const principal = loanAmount;
-    const rate = interestRate / 100 / 12;
-    const time = tenure;
-    
-    if (rate === 0) {
-      return principal / time;
-    }
-    
-    const emi = (principal * rate * Math.pow(1 + rate, time)) / (Math.pow(1 + rate, time) - 1);
-    return Math.round(emi);
-  };
-
-  const emi = calculateEMI();
-  const totalAmount = emi * tenure;
-  const totalInterest = totalAmount - loanAmount;
-
-  // Smooth scroll to section
   const scrollToSection = (sectionId: string) => {
     setActiveTab(sectionId);
     const element = document.getElementById(sectionId);
     if (element) {
       const offset = isTabSticky ? 80 : 0;
-      const elementPosition = element.offsetTop - offset;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: element.offsetTop - offset, behavior: 'smooth' });
     }
   };
 
   const getFillPercentage = (value: number, min: number, max: number): string => {
-    const numValue = Number(value);
-    const numMin = Number(min);
-    const numMax = Number(max);
-
-    if (numMax === numMin) return '0%';
-    
-    const percentage = ((numValue - numMin) / (numMax - numMin)) * 100;
-    
+    const percentage = ((Number(value) - Number(min)) / (Number(max) - Number(min))) * 100;
     return `${Math.max(0, Math.min(100, percentage))}%`;
-};
+  };
 
   const scrollToForm = () => {
-        const element = document.getElementById('loan-application-form');
-        if (element) {
-            const offset = 100;
-            const elementPosition = element.getBoundingClientRect().top + window.scrollY - offset;
-            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-            setTimeout(highlightFormFields, 500);
-        }
-    };
-
-  const highlightFormFields = () => {
-    const fields = document.querySelectorAll('#loan-application-form input, #loan-application-form select');
-    fields.forEach((f) => {
-      (f as HTMLElement).classList.add('ring-2', 'ring-offset-2', 'ring-[#1e3a8a]');
-    });
-    setTimeout(() => {
-      fields.forEach((f) => {
-        (f as HTMLElement).classList.remove('ring-2', 'ring-offset-2', 'ring-[#1e3a8a]');
-      });
-    }, 2000);
+    const el = document.getElementById('loan-application-form');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        const fields = document.querySelectorAll('#loan-application-form input, #loan-application-form select');
+        fields.forEach((f) => (f as HTMLElement).classList.add('ring-2', 'ring-offset-2', 'ring-[#1e3a8a]'));
+        setTimeout(() => fields.forEach((f) => (f as HTMLElement).classList.remove('ring-2', 'ring-offset-2', 'ring-[#1e3a8a]')), 2000);
+      }, 200);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -212,186 +177,168 @@ export const HomeLoanPage = (): JSX.Element => {
     setTimeout(() => setFormStatus('SUCCESS'), 1500);
   };
 
-  // Tab navigation items
   const tabItems = [
     { id: "overview", label: "Overview" },
     { id: "features", label: "Features" },
     { id: "eligibility", label: "Eligibility" },
     { id: "documents", label: "Documents" },
-    { id: "calculator", label: "EMI Calculator" },
+    { id: "calculator", label: "Calculator" },
     { id: "fees", label: "Fees & Charges" },
     { id: "faqs", label: "FAQs" }
   ];
 
-  // Why Accrefin features for home loans
   const whyAccrefinFeatures = [
     {
       icon: <ZapIcon className="w-6 h-6" />,
-      title: "Quick Home Loan Approval",
-      subtitle: "Get approved in 72 hours with minimal documentation",
+      title: "Instant Disbursal",
+      subtitle: "Get cash in hand within 30 minutes of gold assessment at our partner branches",
       iconColor: "text-[#0050B2]",
       bgColor: "bg-blue-50/50"
     },
     {
       icon: <TrendingUpIcon className="w-6 h-6" />,
-      title: "Low Interest from 6.5%",
-      subtitle: "Competitive rates for home purchase and construction",
+      title: "Low Interest from 7%",
+      subtitle: "Among the lowest gold loan rates in the market — starting just 7% p.a.",
       iconColor: "text-[#0050B2]",
       bgColor: "bg-blue-50/50"
     },
     {
-      icon: <HomeIcon className="w-6 h-6" />,
-      title: "All Property Types",
-      subtitle: "Finance apartments, villas, plots, and commercial properties",
+      icon: <GemIcon className="w-6 h-6" />,
+      title: "Gold Stays Safe",
+      subtitle: "Your gold is stored in fully insured bank-grade vaults until repayment",
       iconColor: "text-[#0050B2]",
       bgColor: "bg-blue-50/50"
     },
     {
-      icon: <LockIcon className="w-6 h-6" />,
-      title: "100% Digital Process",
-      subtitle: "Complete paperless journey from application to disbursal",
+      icon: <RefreshCwIcon className="w-6 h-6" />,
+      title: "Flexible Repayment",
+      subtitle: "Repay interest monthly or bullet repayment at end of tenure — your choice",
       iconColor: "text-[#0050B2]",
       bgColor: "bg-blue-50/50"
     }
   ];
 
-  // Home loan features
-  const homeLoanFeatures = [
+  const goldLoanFeatures = [
     {
-      icon: <HomeIcon className="w-8 h-8" />,
-      title: "All Property Types",
-      description: "Finance ready homes, under-construction, plots, and commercial properties",
+      icon: <GemIcon className="w-8 h-8" />,
+      title: "All Gold Types",
+      description: "Jewellery, coins, bars — all accepted. Gold from 18K to 24K purity",
       bgColor: "bg-blue-50"
     },
     {
-      icon: <CalculatorIcon className="w-8 h-8" />,
+      icon: <CalendarIcon className="w-8 h-8" />,
       title: "Flexible Tenure",
-      description: "Choose repayment tenure from 5 to 30 years as per your convenience",
+      description: "Choose repayment tenure from 3 months to 3 years as per your need",
       bgColor: "bg-green-50"
     },
     {
       icon: <ShieldIcon className="w-8 h-8" />,
-      title: "Property Insurance",
-      description: "Comprehensive property insurance options available with your loan",
+      title: "Safe & Insured",
+      description: "Gold stored in bank vaults with full insurance coverage throughout the tenure",
       bgColor: "bg-purple-50"
     },
     {
       icon: <CheckIcon className="w-8 h-8" />,
-      title: "Tax Benefits",
-      description: "Save up to ₹3.5 lakh annually under Sections 80C and 24(b)",
+      title: "No Income Proof",
+      description: "No income documents or credit score required — gold is the only collateral",
       bgColor: "bg-orange-50"
     }
   ];
 
-  // Bank offers data for home loans
   const bankOffers = [
-        { bank: "SBI", logo: "/logos/s.png", interestRate: "6.70% - 9.65%", processingFee: "Up to 0.35%", loanAmount: "₹1L - ₹5Cr", features: ["Doorstep Service", "Quick Approval"], rating: 4.4, highlight: "Most Popular" },
-        { bank: "HDFC Bank", logo: "/logos/h.png", interestRate: "6.75% - 9.50%", processingFee: "Up to 0.50%", loanAmount: "₹1L - ₹5Cr", features: ["Digital Process", "Pre-approved Offers"], rating: 4.3, highlight: "Best Rate" },
-        { bank: "ICICI Bank", logo: "/logos/i.png", interestRate: "6.90% - 10.00%", processingFee: "Up to 1.00%", loanAmount: "₹1L - ₹3Cr", features: ["Online Application", "Balance Transfer"], rating: 4.2, highlight: "Fast Processing" },
-        { bank: "Axis Bank", logo: "/logos/A.png", interestRate: "7.00% - 10.10%", processingFee: "Up to 0.75%", loanAmount: "₹1L - ₹4Cr", features: ["Flexible Tenure"], rating: 4.1, highlight: "Flexible" },
-        { bank: "Kotak Bank", logo: "/logos/k.png", interestRate: "6.80% - 9.80%", processingFee: "Up to 0.40%", loanAmount: "₹1L - ₹3.5Cr", features: ["Low Rates"], rating: 4.3, highlight: "Low Fee" },
-    ];
-
-    // const partnersVisible = 3;
-
-  // Eligibility criteria for home loans
-  const eligibilityCriteria = [
-    { criteria: "Age", requirement: "21-65 years for salaried, up to 70 for self-employed", icon: "👤" },
-    { criteria: "Monthly Income", requirement: "Minimum ₹25,000 for salaried", icon: "💰" },
-    { criteria: "Employment", requirement: "Minimum 2 years total, 1 year current job", icon: "💼" },
-    { criteria: "Credit Score", requirement: "750+ for best rates, 650+ minimum", icon: "📊" },
-    { criteria: "Debt-to-Income", requirement: "Total EMIs should not exceed 50% of income", icon: "⚖️" },
-    { criteria: "Down Payment", requirement: "10-20% of property value", icon: "🏦" }
+    { bank: "HDFC Bank", logo: "/logos/h.png", interestRate: "7.50% - 16.00%", processingFee: "Up to 1.50%", loanAmount: "₹10K - ₹1Cr", features: ["Instant Disbursal", "Safe Custody"], rating: 4.4, highlight: "Most Popular" },
+    { bank: "ICICI Bank", logo: "/logos/i.png", interestRate: "8.00% - 17.00%", processingFee: "Up to 1.00%", loanAmount: "₹10K - ₹1Cr", features: ["Quick Approval", "Digital Process"], rating: 4.3, highlight: "Best Rate" },
+    { bank: "Axis Bank", logo: "/logos/A.png", interestRate: "8.50% - 17.50%", processingFee: "Up to 1.50%", loanAmount: "₹25K - ₹50L", features: ["Flexible EMI", "Multiple Schemes"], rating: 4.1, highlight: "Flexible" },
+    { bank: "Muthoot Finance", logo: "/logos/k.png", interestRate: "12.00% - 24.00%", processingFee: "Up to 1.00%", loanAmount: "₹1.5K - ₹1Cr", features: ["Fastest Approval", "1500+ Branches"], rating: 4.5, highlight: "Fastest" },
+    { bank: "Manappuram", logo: "/logos/p.png", interestRate: "9.90% - 26.00%", processingFee: "Nil", loanAmount: "₹1K - ₹1Cr", features: ["No Processing Fee", "3500+ Branches"], rating: 4.2, highlight: "No Fee" },
   ];
 
-  // Required documents for home loans
+  const eligibilityCriteria = [
+    { criteria: "Age", requirement: "18 years and above", icon: "👤" },
+    { criteria: "Gold Purity", requirement: "Minimum 18 Karat (18K to 24K accepted)", icon: "💛" },
+    { criteria: "Gold Type", requirement: "Jewellery, ornaments, coins & bars accepted", icon: "💎" },
+    { criteria: "No Credit Score", requirement: "CIBIL score not required — gold is collateral", icon: "📊" },
+    { criteria: "No Income Proof", requirement: "Salaried or self-employed, income docs not mandatory", icon: "💼" },
+    { criteria: "Gold Ownership", requirement: "Gold should belong to the applicant or family member", icon: "🏦" }
+  ];
+
   const requiredDocs = [
     {
-      category: "Identity & Address Proof",
+      category: "Identity Proof",
       icon: "📄",
       docs: [
         "Aadhaar Card",
-        "PAN Card", 
+        "PAN Card",
         "Passport",
         "Voter ID",
-        "Driving License",
-        "Utility Bills"
+        "Driving License"
       ]
     },
     {
-      category: "Income Proof",
-      icon: "💰",
-      docs: [
-        "Salary slips (last 3 months)",
-        "Form 16",
-        "IT Returns (last 2 years)",
-        "Bank Statements (last 6 months)",
-        "Employment Certificate",
-        "Promotion/Increment Letter"
-      ]
-    },
-    {
-      category: "Property Documents",
+      category: "Address Proof",
       icon: "🏠",
       docs: [
-        "Sale Agreement/Allotment Letter",
-        "Property Card/7/12 Extract",
-        "Approved Building Plan",
-        "NOC from Builder/Society",
-        "Property Tax Receipts",
-        "Occupancy Certificate"
+        "Aadhaar Card",
+        "Utility Bills (Electricity/Water)",
+        "Passport",
+        "Voter ID",
+        "Bank Statement with address"
+      ]
+    },
+    {
+      category: "Gold Ownership",
+      icon: "💎",
+      docs: [
+        "Original purchase receipt (if available)",
+        "Gold jewellery/ ornaments to be pledged",
+        "Family declaration (if gold belongs to family)"
       ]
     },
     {
       category: "Additional Documents",
       icon: "📋",
       docs: [
-        "Passport Size Photographs",
-        "Property Valuation Report",
-        "Legal Verification Report",
-        "Title Deed/Chain of Documents",
-        "Insurance Documents",
-        "Co-applicant Documents (if any)"
+        "Passport Size Photographs (2 copies)",
+        "Signed loan application form",
+        "Any existing loan NOC (if applicable)"
       ]
     }
   ];
 
-  // Processing fees for home loans
   const processingFees = [
-    { particular: "Processing Fees", charges: "0.25% to 1% of loan amount + GST" },
-    { particular: "Administrative Charges", charges: "₹2,000 to ₹10,000 + GST" },
-    { particular: "Technical Evaluation", charges: "₹2,500 to ₹7,500 + GST" },
-    { particular: "Legal Charges", charges: "₹3,000 to ₹10,000 + GST" },
-    { particular: "Valuation Charges", charges: "₹2,000 to ₹5,000 + GST" },
-    { particular: "Prepayment Charges", charges: "Usually Nil for floating rate loans" },
-    { particular: "Penal Interest", charges: "2% per month on overdue amount" }
+    { particular: "Processing Fees", charges: "Nil to 1.5% of loan amount + GST" },
+    { particular: "Gold Valuation Charges", charges: "Nil (included in processing) or ₹100–₹500" },
+    { particular: "Prepayment Charges", charges: "Nil (most lenders allow free foreclosure)" },
+    { particular: "Renewal/Auction Charges", charges: "₹500 to ₹2,000 if gold is auctioned on default" },
+    { particular: "Penal Interest", charges: "2% to 3% per month on overdue amount" },
+    { particular: "Cheque Bounce Charges", charges: "₹250 to ₹500 per instance" },
+    { particular: "Statement Charges", charges: "₹50 to ₹200 per request" }
   ];
 
-  // Home loan FAQs
   const faqs = [
     {
-      question: "What is the maximum loan amount I can get for a home loan?",
-      answer: "Home loan amounts typically range from ₹1 lakh to ₹5 crores, depending on your income, credit score, and property value. Most lenders finance up to 80-90% of the property's market value or agreement value, whichever is lower."
+      question: "What types of gold are accepted for a Gold Loan?",
+      answer: "Most lenders accept gold jewellery, ornaments, and gold coins of 18K to 24K purity. Gold bars may be accepted by select lenders. Studded jewellery (with diamonds/gemstones) is typically valued only for the gold content, not the stones."
     },
     {
-      question: "What is the minimum down payment required?",
-      answer: "The minimum down payment is usually 10-20% of the property value. A higher down payment can help you get better interest rates, reduce your EMI burden, and eliminate the need for mortgage insurance."
+      question: "How is the gold loan amount determined?",
+      answer: "The loan amount is based on the weight and purity of your gold, multiplied by the prevailing market rate, up to a maximum Loan-to-Value (LTV) ratio of 75% as per RBI guidelines. Higher purity gold (22K or 24K) fetches a higher loan amount."
     },
     {
-      question: "How long does it take to get home loan approval?",
-      answer: "With complete documentation and property verification, home loan approval typically takes 7-15 working days. Pre-approved loans can be processed faster, sometimes within 72 hours."
+      question: "Is my gold safe during the loan tenure?",
+      answer: "Yes, your gold is stored in fully insured, bank-grade secure vaults during the entire loan tenure. Once you repay the loan in full, your gold is returned to you in the same condition. You receive an acknowledgement receipt at the time of pledging."
     },
     {
-      question: "Can I get tax benefits on my home loan?",
-      answer: "Yes, you can claim tax deductions under Section 80C (up to ₹1.5 lakh for principal repayment) and Section 24(b) (up to ₹2 lakh for interest payment). First-time homebuyers get an additional ₹50,000 deduction under Section 80EEA."
+      question: "What happens if I cannot repay the gold loan?",
+      answer: "If you default on the gold loan, the lender has the right to auction your pledged gold to recover the outstanding dues. Lenders typically provide advance notice and allow you to regularize the loan before resorting to auction."
     },
     {
-      question: "What happens during property verification?",
-      answer: "Banks conduct both technical and legal verification of the property. Technical verification assesses the property's condition and market value, while legal verification ensures clear title, proper approvals, and compliance with local regulations."
+      question: "Can I partially repay my gold loan?",
+      answer: "Yes, most gold loan lenders allow partial repayment without any charges. You can also release a portion of the pledged gold proportionate to the amount repaid. This gives you flexibility to manage your finances."
     },
     {
-      question: "Can I prepay my home loan without penalties?",
-      answer: "Most banks allow prepayment of floating rate home loans without any charges. For fixed rate loans, prepayment charges of 2-3% may apply. Prepayment significantly reduces your total interest burden."
+      question: "How long does it take to get a gold loan?",
+      answer: "Gold loans are among the fastest loans available. In-branch gold valuation and disbursal can happen within 30 minutes to a few hours. Even for larger amounts, the entire process is typically completed within the same day."
     }
   ];
 
@@ -404,7 +351,6 @@ export const HomeLoanPage = (): JSX.Element => {
         <RoomGrid />
 
         <div className="container mx-auto max-w-7xl px-6 pt-8 pb-0 relative z-10">
-          {/* India's most trusted platform badge */}
           <div className="flex justify-center mb-10">
             <div className="flex items-center gap-2 border border-gray-300 rounded-full px-5 py-2.5 bg-gray-50 backdrop-blur-sm">
               <svg className="w-5 h-5 text-[#0050B2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -414,27 +360,24 @@ export const HomeLoanPage = (): JSX.Element => {
             </div>
           </div>
 
-          {/* Breadcrumb */}
           <div className="mb-6">
             <nav className={`flex items-center space-x-2 text-sm ${bodyFont}`}>
               <a href="/" className="text-gray-600 hover:text-gray-800 transition-colors">Home</a>
               <span className="text-gray-400">/</span>
-              <span className="text-gray-600">Home Loan</span>
+              <span className="text-gray-600">Gold Loan</span>
             </nav>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start pb-14">
-            {/* Left Content */}
             <div className="space-y-6">
               <h1 className={`text-4xl lg:text-5xl xl:text-[56px] font-normal text-gray-900 leading-[1.15] tracking-tight ${headingFont}`}>
-                Check Home<br />Loan Offers Online
+                Instant Gold<br />Loan Online
               </h1>
               <p className={`text-base lg:text-lg text-gray-600 leading-relaxed max-w-lg ${bodyFont} font-medium`}>
-                Get a home loan of up to Rs 5 crore at an interest rate starting from 6.5% p.a. for the tenures of up to 20 years. Quick approval with minimal documentation from 35+ partner lenders.
+                Unlock instant funds against your gold jewellery, ornaments, or coins. Get a Gold Loan of up to ₹5 Crore+ at interest rates starting from 7% p.a. Disbursal within 30 minutes with minimal documentation.
               </p>
             </div>
 
-            {/* Right Content - Application Form */}
             <div className="flex justify-center lg:justify-end">
               <Card id="loan-application-form" className="bg-white border-2 border-[#c8d7eb] rounded-2xl shadow-lg w-full max-w-[480px]">
                 <CardContent className="p-8">
@@ -451,11 +394,10 @@ export const HomeLoanPage = (): JSX.Element => {
                           className={`w-full h-11 px-3 border border-gray-200 focus:border-[#0050B2] rounded-md text-sm text-gray-500 outline-none ${bodyFont}`}
                           defaultValue="default"
                         >
-                          <option value="default" disabled hidden>Property Type</option>
-                          <option value="apartment">Apartment / Flat</option>
-                          <option value="villa">Villa / Independent House</option>
-                          <option value="plot">Plot / Land</option>
-                          <option value="commercial">Commercial Property</option>
+                          <option value="default" disabled hidden>Gold Type</option>
+                          <option value="jewellery">Jewellery / Ornaments</option>
+                          <option value="coins">Gold Coins</option>
+                          <option value="bars">Gold Bars</option>
                         </select>
                       </div>
                       <div>
@@ -463,9 +405,10 @@ export const HomeLoanPage = (): JSX.Element => {
                           className={`w-full h-11 px-3 border border-gray-200 focus:border-[#0050B2] rounded-md text-sm text-gray-500 outline-none ${bodyFont}`}
                           defaultValue="default"
                         >
-                          <option value="default" disabled hidden>Select Occupation</option>
-                          <option value="salaried">Salaried</option>
-                          <option value="self-employed">Self Employed</option>
+                          <option value="default" disabled hidden>Gold Purity</option>
+                          <option value="24k">24 Karat</option>
+                          <option value="22k">22 Karat</option>
+                          <option value="18k">18 Karat</option>
                         </select>
                       </div>
                       <div className={`text-center text-xs text-gray-500 ${bodyFont}`}>
@@ -477,7 +420,7 @@ export const HomeLoanPage = (): JSX.Element => {
                         <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>{" "}
                         <a href="#" className="text-blue-600 hover:underline">Credit Report Terms of Use.</a>
                       </div>
-                      <Button type="submit" className={`w-full bg-[#0877ff] hover:bg-[#0666dd] text-white py-3 text-sm font-bold rounded shadow-[0px_4px_11.8px_-5px_#0050b2] transition-all duration-300 ${bodyFont} tracking-wide`}>
+                      <Button type="submit" className={`w-full bg-[#0877ff] hover:bg-[#0666dd] text-white py-4 text-sm font-bold rounded shadow-[0px_4px_11.8px_-5px_#0050b2] transition-all duration-300 ${bodyFont} tracking-wide`}>
                         APPLY NOW
                       </Button>
                     </form>
@@ -497,7 +440,7 @@ export const HomeLoanPage = (): JSX.Element => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                       </svg>
                       <h3 className="text-2xl font-bold mb-2">Application Received!</h3>
-                      <p className="text-gray-600 max-w-xs">Your personalized loan offers will be sent to your phone shortly.</p>
+                      <p className="text-gray-600 max-w-xs">Our team will call you to schedule a gold assessment at your nearest partner branch.</p>
                       <Button onClick={() => setFormStatus('FORM')} className="mt-4 bg-[#0050B2] hover:bg-[#003d8a]">
                         Explore More
                       </Button>
@@ -509,15 +452,14 @@ export const HomeLoanPage = (): JSX.Element => {
           </div>
         </div>
 
-        {/* ── Trust Bar - Quick Approval, No Collateral etc ── */}
         <div className="bg-[#0e396d] border-t border-white/10 relative z-10">
           <div className="container mx-auto max-w-7xl px-4">
             <div className="flex items-center justify-center flex-wrap lg:flex-nowrap">
               {[
-                { title: "Quick Approval", desc: "Get approved in minutes" },
-                { title: "No Collateral", desc: "No security deposit required" },
-                { title: "Pre-Approved Offers", desc: "Custom offers for you" },
-                { title: "Dedicated Support", desc: "Human assistance" },
+                { title: "30-Min Disbursal", desc: "Cash in hand within 30 minutes" },
+                { title: "No Credit Score", desc: "Gold is the only collateral needed" },
+                { title: "Safe Gold Custody", desc: "Bank-grade insured vaults" },
+                { title: "Dedicated Support", desc: "Gold loan experts at your service" },
               ].map((item, index, arr) => (
                 <React.Fragment key={item.title}>
                   <div className="flex flex-col items-start gap-4 py-10 px-10 w-[240px]">
@@ -534,8 +476,7 @@ export const HomeLoanPage = (): JSX.Element => {
         </div>
       </section>
 
-      {/* Sticky Tab Navigation */}
-      <div className={`${isTabSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg' : 'relative'} bg-white border-b border-gray-200 transition-all duration-300`}>
+      <div className={`${isTabSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-md' : 'relative pt-8 pb-4'} bg-white border-b border-gray-200 transition-all duration-300`}>
         <div className="container mx-auto max-w-7xl px-4">
           <div className="flex items-center justify-center">
             <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
@@ -562,36 +503,27 @@ export const HomeLoanPage = (): JSX.Element => {
         <div className="container mx-auto max-w-7xl px-4">
           <div className="text-center mb-12">
             <h2 className={`text-3xl lg:text-5xl text-[#273240] mb-4 tracking-tight font-normal ${headingFont}`}>
-              Why Choose Accrefin for Your Home Loan?
+              Why Choose Accrefin for Your Gold Loan?
             </h2>
             <p className={`text-lg text-gray-500 font-medium ${bodyFont}`}>
-              Experience the future of home financing with our advanced technology
+              Turn your gold into instant liquidity with India's most trusted platform
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {whyAccrefinFeatures.map((feature, index) => (
-              <Card 
+              <Card
                 key={index}
                 className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-gray-100/50 bg-white/80 backdrop-blur-sm relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[#0050B2]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
                 <CardContent className="p-6 text-center relative z-10">
                   <div className={`w-14 h-14 ${feature.bgColor} rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform duration-300 border border-[#0050B2]/10`}>
-                    <div className={feature.iconColor}>
-                      {feature.icon}
-                    </div>
+                    <div className={feature.iconColor}>{feature.icon}</div>
                   </div>
-                  
                   <h3 className={`text-lg font-bold text-gray-900 mb-2 group-hover:text-[#0050B2] transition-colors duration-300 ${headingFont}`}>
                     {feature.title}
                   </h3>
-                  
-                  <p className={`text-gray-600 leading-relaxed text-sm ${bodyFont}`}>
-                    {feature.subtitle}
-                  </p>
-                  
+                  <p className={`text-gray-600 leading-relaxed text-sm ${bodyFont}`}>{feature.subtitle}</p>
                   <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-6 h-0.5 bg-[#0050B2] mx-auto rounded-full"></div>
                   </div>
@@ -607,30 +539,28 @@ export const HomeLoanPage = (): JSX.Element => {
         <div className="container mx-auto max-w-7xl px-4">
           <div className="text-center mb-12">
             <h2 className={`text-3xl lg:text-5xl text-[#273240] mb-4 tracking-tight font-normal ${headingFont}`}>
-              Home Loan Features &amp; Benefits
+              Gold Loan Features &amp; Benefits
             </h2>
             <p className={`text-lg text-gray-500 font-medium ${bodyFont}`}>
-              Comprehensive features designed for your homeownership journey
+              The fastest and most hassle-free way to access funds
             </p>
           </div>
           <div className="relative overflow-hidden" style={{ background: 'linear-gradient(90deg, rgba(246,250,255,1) 0%, rgba(218,235,255,1) 100%)' }}>
             <PerspectiveGrid color="rgba(180,200,230,0.20)" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 relative z-10">
-            {homeLoanFeatures.map((feature, index) => (
-              <div
-                key={index}
-                className={`flex flex-col items-start gap-4 p-8 border border-[#e4e4e4] ${index < 3 ? 'bg-[#eaf3ff]/50' : 'bg-[#f0f7ff]/50'}`}
-              >
-                <div className="w-12 h-12 flex items-center justify-center bg-transparent rounded">
-                  <div className="text-[#0050B2]">
-                    {feature.icon}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 relative z-10">
+              {goldLoanFeatures.map((feature, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col items-start gap-4 p-8 border border-[#e4e4e4] ${index < 3 ? 'bg-[#eaf3ff]/50' : 'bg-[#f0f7ff]/50'}`}
+                >
+                  <div className="w-12 h-12 flex items-center justify-center bg-transparent rounded">
+                    <div className="text-[#0050B2]">{feature.icon}</div>
                   </div>
+                  <h3 className={`text-[#273240] text-2xl lg:text-[32px] font-normal leading-tight ${headingFont}`}>{feature.title}</h3>
+                  <p className={`text-[#0877ff] text-base font-medium ${bodyFont}`}>{feature.description}</p>
                 </div>
-                <h3 className={`text-[#273240] text-2xl lg:text-[32px] font-normal leading-tight ${headingFont}`}>{feature.title}</h3>
-                <p className={`text-[#0877ff] text-base font-medium ${bodyFont}`}>{feature.description}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -642,7 +572,7 @@ export const HomeLoanPage = (): JSX.Element => {
           <div className="container mx-auto max-w-7xl px-4">
             <div className="text-center mb-14">
               <h2 className={`text-3xl lg:text-5xl text-white mb-4 tracking-tight font-normal ${headingFont}`}>
-                Home Loan Eligibility Criteria
+                Gold Loan Eligibility Criteria
               </h2>
             </div>
             <div className="relative max-w-5xl mx-auto mb-12">
@@ -653,11 +583,11 @@ export const HomeLoanPage = (): JSX.Element => {
                     <div className="flex items-start gap-4">
                       <div className="w-14 h-14 flex items-center justify-center bg-blue-100 rounded-lg flex-shrink-0">
                         {item.criteria === "Age" && <UserIcon className="w-6 h-6 text-[#0050B2]" />}
-                        {item.criteria === "Monthly Income" && <BanknotesIcon className="w-6 h-6 text-[#0050B2]" />}
-                        {item.criteria === "Employment" && <ShieldIcon className="w-6 h-6 text-[#0050B2]" />}
-                        {item.criteria === "Credit Score" && <TrendingUpIcon className="w-6 h-6 text-[#0050B2]" />}
-                        {item.criteria === "Debt-to-Income" && <ZapIcon className="w-6 h-6 text-[#0050B2]" />}
-                        {item.criteria === "Down Payment" && <CreditCardIcon className="w-6 h-6 text-[#0050B2]" />}
+                        {item.criteria === "Gold Purity" && <GemIcon className="w-6 h-6 text-[#0050B2]" />}
+                        {item.criteria === "Gold Type" && <GemIcon className="w-6 h-6 text-[#0050B2]" />}
+                        {item.criteria === "No Credit Score" && <TrendingUpIcon className="w-6 h-6 text-[#0050B2]" />}
+                        {item.criteria === "No Income Proof" && <ShieldIcon className="w-6 h-6 text-[#0050B2]" />}
+                        {item.criteria === "Gold Ownership" && <LockIcon className="w-6 h-6 text-[#0050B2]" />}
                       </div>
                       <div className="flex-1">
                         <h3 className={`font-semibold text-[#0b0b0b] mb-1.5 text-lg ${bodyFont}`}>{item.criteria}</h3>
@@ -670,15 +600,14 @@ export const HomeLoanPage = (): JSX.Element => {
             </div>
           </div>
         </div>
-        {/* 4-Step Process Bar */}
         <div className="bg-[#004B8F] relative z-10">
           <div className="container mx-auto max-w-7xl px-4">
             <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/20">
               {[
-                { step: "01", title: "Check Eligibility" },
-                { step: "02", title: "Compare Offers" },
-                { step: "03", title: "Submit Application" },
-                { step: "04", title: "Get Instant Approval" }
+                { step: "01", title: "Visit Branch / Apply Online" },
+                { step: "02", title: "Gold Assessment" },
+                { step: "03", title: "Loan Approval" },
+                { step: "04", title: "Instant Disbursal" }
               ].map((item, index) => (
                 <div key={index} className="py-10 px-8 text-center">
                   <div className={`text-5xl lg:text-7xl font-extrabold text-white leading-none ${bodyFont}`}>{item.step}</div>
@@ -690,7 +619,6 @@ export const HomeLoanPage = (): JSX.Element => {
         </div>
       </section>
 
-      {/* START YOUR APPLICATION - White area */}
       <div className="bg-white py-12 relative z-10">
         <div className="container mx-auto max-w-7xl px-4 flex flex-col items-center justify-center gap-4">
           <Button onClick={scrollToForm} className={`bg-[#0877ff] hover:bg-[#0666dd] text-white font-bold px-6 py-2.5 rounded text-sm shadow-[0px_6px_14px_-6px_#0050b2] transition-all duration-300 ${bodyFont}`}>
@@ -704,10 +632,10 @@ export const HomeLoanPage = (): JSX.Element => {
         <div className="container mx-auto max-w-7xl px-4 relative z-10">
           <div className="text-center mb-12">
             <h2 className={`text-3xl lg:text-5xl text-[#273240] mb-4 tracking-tight font-normal ${headingFont}`}>
-              Documents Required for Home Loan
+              Documents Required for Gold Loan
             </h2>
             <p className={`text-lg text-gray-500 font-medium ${bodyFont}`}>
-              Applicants usually require the following documents for processing home loan applications.
+              Minimal documentation — just your identity proof and your gold is enough.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -731,60 +659,60 @@ export const HomeLoanPage = (): JSX.Element => {
         </div>
       </section>
 
-      {/* Enhanced EMI Calculator */}
-            <section id="calculator" className="py-20 bg-[#0E396E] relative overflow-hidden">
+      {/* Gold Loan Calculator */}
+      <section id="calculator" className="py-20 bg-[#0E396E] relative overflow-hidden">
         <div className="container mx-auto max-w-7xl px-4 relative z-10">
           <div className="text-center mb-16">
             <h2 className={`text-3xl lg:text-5xl text-white mb-4 tracking-tight font-normal ${headingFont}`}>
-              Home Loan EMI Calculator
+              Gold Loan Calculator
             </h2>
             <p className={`text-lg text-white/70 font-medium ${bodyFont}`}>
-              Calculate your monthly EMI and plan your home purchase
+              Estimate your loan amount based on your gold's weight and purity
             </p>
           </div>
           <Card className="max-w-5xl mx-auto shadow-lg border-0 bg-white">
             <CardContent className="p-10 lg:p-12">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
                 <div>
-                  <label className={`text-sm font-semibold text-gray-700 ${bodyFont} mb-2 block`}>Loan Amount</label>
+                  <label className={`text-sm font-semibold text-gray-700 ${bodyFont} mb-2 block`}>Gold Weight (grams)</label>
                   <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-center">
-                    <span className={`font-bold text-gray-900 text-lg ${bodyFont}`}>₹{(loanAmount/100000).toFixed(1)}L</span>
+                    <span className={`font-bold text-gray-900 text-lg ${bodyFont}`}>{goldWeight}g</span>
                   </div>
-                  <input type="range" min="100000" max="50000000" step="100000" value={loanAmount}
-                    onChange={(e) => setLoanAmount(Number(e.target.value))}
+                  <input type="range" min="5" max="500" step="5" value={goldWeight}
+                    onChange={(e) => setGoldWeight(Number(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer slider mt-3"
-                    style={{ '--fill-percent': getFillPercentage(loanAmount, 100000, 50000000) } as React.CSSProperties}
+                    style={{ '--fill-percent': getFillPercentage(goldWeight, 5, 500) } as React.CSSProperties}
                   />
                   <div className={`flex justify-between text-xs text-gray-400 mt-1 ${bodyFont}`}>
-                    <span>₹1L</span><span>₹5Cr</span>
+                    <span>5g</span><span>500g</span>
                   </div>
                 </div>
                 <div>
-                  <label className={`text-sm font-semibold text-gray-700 ${bodyFont} mb-2 block`}>Tenure</label>
+                  <label className={`text-sm font-semibold text-gray-700 ${bodyFont} mb-2 block`}>Gold Purity (Karat)</label>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-center">
+                    <span className={`font-bold text-gray-900 text-lg ${bodyFont}`}>{goldPurity}K</span>
+                  </div>
+                  <input type="range" min="18" max="24" step="1" value={goldPurity}
+                    onChange={(e) => setGoldPurity(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer slider mt-3"
+                    style={{ '--fill-percent': getFillPercentage(goldPurity, 18, 24) } as React.CSSProperties}
+                  />
+                  <div className={`flex justify-between text-xs text-gray-400 mt-1 ${bodyFont}`}>
+                    <span>18K</span><span>24K</span>
+                  </div>
+                </div>
+                <div>
+                  <label className={`text-sm font-semibold text-gray-700 ${bodyFont} mb-2 block`}>Tenure (Months)</label>
                   <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-center">
                     <span className={`font-bold text-gray-900 text-lg ${bodyFont}`}>{tenure} Months</span>
                   </div>
-                  <input type="range" min="60" max="360" value={tenure}
+                  <input type="range" min="3" max="36" step="3" value={tenure}
                     onChange={(e) => setTenure(Number(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer slider mt-3"
-                    style={{ '--fill-percent': getFillPercentage(tenure, 60, 360) } as React.CSSProperties}
+                    style={{ '--fill-percent': getFillPercentage(tenure, 3, 36) } as React.CSSProperties}
                   />
                   <div className={`flex justify-between text-xs text-gray-400 mt-1 ${bodyFont}`}>
-                    <span>60</span><span>360</span>
-                  </div>
-                </div>
-                <div>
-                  <label className={`text-sm font-semibold text-gray-700 ${bodyFont} mb-2 block`}>Interest Rate</label>
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-center">
-                    <span className={`font-bold text-gray-900 text-lg ${bodyFont}`}>{interestRate}%</span>
-                  </div>
-                  <input type="range" min="6.5" max="15" step="0.1" value={interestRate}
-                    onChange={(e) => setInterestRate(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer slider mt-3"
-                    style={{ '--fill-percent': getFillPercentage(interestRate, 6.5, 15) } as React.CSSProperties}
-                  />
-                  <div className={`flex justify-between text-xs text-gray-400 mt-1 ${bodyFont}`}>
-                    <span>6.5%</span><span>15%</span>
+                    <span>3 Months</span><span>36 Months</span>
                   </div>
                 </div>
               </div>
@@ -792,22 +720,24 @@ export const HomeLoanPage = (): JSX.Element => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className={`text-gray-600 text-sm font-medium ${bodyFont}`}>Principal Amount</span>
+                    <span className={`text-gray-600 text-sm font-medium ${bodyFont}`}>Estimated Loan Amount</span>
                     <span className={`font-bold text-gray-900 bg-gray-100 px-3 py-1 rounded text-sm ${bodyFont}`}>₹{loanAmount.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className={`text-gray-600 text-sm font-medium ${bodyFont}`}>Total Interest</span>
+                    <span className={`text-gray-600 text-sm font-medium ${bodyFont}`}>Total Interest (@{interestRate}% p.a.)</span>
                     <span className={`font-bold text-gray-900 bg-gray-100 px-3 py-1 rounded text-sm ${bodyFont}`}>₹{totalInterest.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center py-3 border-b-2 border-[#0050B2]">
                     <span className={`text-[#0050B2] font-semibold text-sm ${bodyFont}`}>Total Payable</span>
-                    <span className={`font-bold text-[#0050B2] bg-blue-50 px-3 py-1 rounded text-sm ${bodyFont}`}>₹{totalAmount.toLocaleString()}</span>
+                    <span className={`font-bold text-[#0050B2] bg-blue-50 px-3 py-1 rounded text-sm ${bodyFont}`}>₹{totalPayable.toLocaleString()}</span>
                   </div>
+                  <p className={`text-xs text-gray-400 mt-2 ${bodyFont}`}>* Based on approx. ₹6,200/g for 24K gold. Actual amount depends on prevailing market rate at time of pledge.</p>
                 </div>
                 <div className="bg-[#0877ff] rounded-2xl p-8 text-white text-center flex flex-col items-center justify-center">
-                  <h3 className={`text-base font-semibold mb-1 opacity-90 ${bodyFont}`}>Monthly EMI</h3>
-                  <div className={`text-4xl font-extrabold mb-6 ${bodyFont}`}>₹{emi.toLocaleString()}</div>
-                  <Button onClick={scrollToForm} className={`bg-white text-[#0877ff] hover:bg-gray-100 font-bold px-8 py-4 rounded text-sm transition-all duration-300 shadow-[0px_4px_11.8px_-5px_#0050b2] ${bodyFont}`}>
+                  <h3 className={`text-base font-semibold mb-1 opacity-90 ${bodyFont}`}>Estimated Loan Amount</h3>
+                  <div className={`text-4xl font-extrabold mb-2 ${bodyFont}`}>₹{loanAmount.toLocaleString()}</div>
+                  <p className={`text-sm opacity-80 mb-6 ${bodyFont}`}>Against {goldWeight}g of {goldPurity}K gold</p>
+                  <Button onClick={scrollToForm} className={`bg-white text-[#0877ff] hover:bg-gray-100 font-bold px-8 py-2.5 rounded text-sm transition-all duration-300 shadow-[0px_4px_11.8px_-5px_#0050b2] ${bodyFont}`}>
                     APPLY NOW
                   </Button>
                 </div>
@@ -817,75 +747,60 @@ export const HomeLoanPage = (): JSX.Element => {
         </div>
       </section>
 
-      {/* Enhanced Bank Offers Section */}
+      {/* Bank Offers Section */}
       <section id="offers" className="py-16 bg-white">
         <div className="container mx-auto max-w-7xl px-4">
           <div className="text-center mb-12">
             <h2 className={`text-3xl lg:text-5xl text-[#273240] mb-4 tracking-tight font-normal ${headingFont}`}>
-              Best Home Loan Offers
+              Best Gold Loan Offers
             </h2>
             <p className={`text-lg text-gray-500 font-medium ${bodyFont}`}>
               Compare and choose from top lenders
             </p>
           </div>
-
           <div className="flex items-stretch gap-7 overflow-x-auto pb-4 px-2">
             {bankOffers.map((offer, index) => (
-              <Card key={index} className="min-w-[294px] w-[294px] bg-[#f5f9ff] border-[#e1e1e1] flex-shrink-0 flex flex-col">
-                <CardContent className="p-6 flex flex-col flex-1">
-                  {/* Bank Logo */}
-                  <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100">
-                      <img src={offer.logo} alt={`${offer.bank} Logo`} className="w-12 h-12 object-contain" />
+              <Card key={index} className="min-w-[294px] w-[294px] bg-[#f5f9ff] border-[#e1e1e1] hover:shadow-xl transition-shadow duration-300 flex-shrink-0">
+                <CardContent className="p-6 flex flex-col items-center text-center h-full">
+                  <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mb-3 border border-gray-200">
+                    <img src={offer.logo} alt={`${offer.bank} Logo`} className="w-10 h-10 object-contain" />
+                  </div>
+                  <div className="font-bold text-gray-900 text-lg">{offer.bank}</div>
+                  <div className="flex items-center justify-center gap-3 mt-2">
+                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                      <StarIcon className="w-4 h-4 text-yellow-400 fill-current" />
+                      <span className="text-sm text-gray-600 font-semibold">{offer.rating}</span>
+                    </div>
+                    {offer.highlight && (
+                      <Badge className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
+                        {offer.highlight}
+                      </Badge>
+                    )}
+                  </div>
+                  <Separator className="my-4 w-full" />
+                  <div className="w-full space-y-3 text-sm flex-1">
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Interest:</span>
+                      <span className="font-semibold text-gray-900">{offer.interestRate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Processing Fee:</span>
+                      <span className="font-semibold text-gray-900">{offer.processingFee}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Loan Amount:</span>
+                      <span className="font-semibold text-gray-900">{offer.loanAmount}</span>
                     </div>
                   </div>
-
-                  {/* Bank Name, Rating, Badge */}
-                  <div className="text-center mb-4">
-                    <div className="font-bold text-gray-900 text-lg">{offer.bank}</div>
-                    <div className="flex items-center justify-center gap-3 mt-2">
-                      <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <StarIcon className="w-4 h-4 text-yellow-400 fill-current" />
-                        <span className="text-sm text-gray-600 font-semibold">{offer.rating}</span>
-                      </div>
-                      {offer.highlight && (
-                        <Badge className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
-                          {offer.highlight}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-
-                  <Separator className="my-3" />
-
-                  {/* Loan Details */}
-                  <div className="space-y-3 mb-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-500">Interest Rate</span>
-                      <span className="font-semibold text-gray-900 text-sm">{offer.interestRate}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-500">Processing Fee</span>
-                      <span className="font-semibold text-gray-900 text-sm">{offer.processingFee}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-500">Loan Amount</span>
-                      <span className="font-semibold text-gray-900 text-sm">{offer.loanAmount}</span>
-                    </div>
-                  </div>
-
-                  {/* Features */}
-                  <div className="space-y-2 mb-6 flex-1">
+                  <div className="w-full mt-4 space-y-2">
                     {offer.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <CheckIcon className="w-4 h-4 text-green-600 flex-shrink-0" />
-                        <span className="text-sm text-gray-700">{feature}</span>
+                      <div key={idx} className="flex items-center gap-2 text-sm text-gray-600">
+                        <CheckIcon className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        {feature}
                       </div>
                     ))}
                   </div>
-
-                  {/* Apply Button */}
-                  <Button onClick={() => navigate(ROUTES.APPLICATION)} className="w-full bg-gradient-to-r from-[#0050B2] to-[#003d8a] hover:from-[#003d8a] hover:to-[#002d66] text-white font-semibold py-3 rounded-xl transition-all duration-300">
+                  <Button onClick={() => navigate(ROUTES.APPLICATION)} className="w-full mt-6 bg-[#0877ff] hover:bg-[#0666dd] text-white font-semibold py-3 rounded-lg transition-all duration-300">
                     APPLY NOW
                   </Button>
                 </CardContent>
@@ -902,7 +817,7 @@ export const HomeLoanPage = (): JSX.Element => {
           <div className="mb-20">
             <div className="text-center mb-16">
               <h2 className={`text-3xl lg:text-5xl text-white mb-4 tracking-tight font-normal ${headingFont}`}>
-                Home Loan Processing Fees and Charges
+                Gold Loan Fees and Charges
               </h2>
               <p className={`text-lg text-white/70 font-medium ${bodyFont}`}>
                 Transparent pricing with no hidden costs
@@ -929,7 +844,8 @@ export const HomeLoanPage = (): JSX.Element => {
           </div>
         </div>
       </section>
-      {/* TESTIMONIALS - Light blue bg with visible perspective grid */}
+
+      {/* Testimonials */}
       <section className="bg-gradient-to-b from-[#5B9FE9] to-[#4B8FD9] relative overflow-hidden">
         <TunnelGrid color="rgba(255,255,255,0.18)" />
         <div className="py-20">
@@ -939,28 +855,27 @@ export const HomeLoanPage = (): JSX.Element => {
                 What Our Customers Say
               </h2>
               <p className={`text-lg text-white/80 max-w-2xl mx-auto font-medium ${bodyFont}`}>
-                See how Accrefin has helped thousands of customers achieve their financial goals
+                Thousands of customers trust Accrefin for instant gold loans
               </p>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               {[
                 {
-                  name: "Priya Sharma",
+                  name: "Lakshmi Devi",
                   photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-                  feedback: "Accrefin made my home loan journey incredibly smooth. Got the best rate from HDFC Bank within 24 hours. Highly recommended!",
+                  feedback: "I got a gold loan of ₹3 lakhs within 45 minutes! Accrefin connected me with HDFC Bank and the process was so smooth. My jewellery is safe in their vault.",
                   rating: 5
                 },
                 {
-                  name: "Rajesh Kumar",
+                  name: "Suresh Nair",
                   photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-                  feedback: "Quick personal loan approval for my business needs. The team was very professional and transparent about all the charges.",
+                  feedback: "Needed urgent funds for my business. Gold loan was the fastest option. Accrefin got me the best rate at 8.5%. No paperwork hassle at all. Highly recommend!",
                   rating: 5
                 },
                 {
-                  name: "Anita Patel",
+                  name: "Meena Pillai",
                   photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-                  feedback: "Excellent service! They helped me compare multiple offers and choose the best one. Saved me a lot of time and effort!",
+                  feedback: "My credit score was low so banks were rejecting me. Accrefin suggested a gold loan and I got ₹1.5 lakhs the same day. Perfect solution for urgent needs!",
                   rating: 5
                 }
               ].map((testimonial, index) => (
@@ -982,26 +897,26 @@ export const HomeLoanPage = (): JSX.Element => {
             </div>
           </div>
         </div>
-
         <div className="bg-[#0050B2] relative z-10">
           <div className="container mx-auto max-w-7xl px-4">
             <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/20">
-            {[
-              { value: "4,000+", label: "Happy Customers" },
-              { value: "98%", label: "Approval Rate" },
-              { value: "4.9/5", label: "Customer Rating" },
-              { value: "24hrs", label: "Average Processing" }
-            ].map((stat, index) => (
-              <div key={index} className="text-center py-10 px-4">
-                <div className={`text-4xl lg:text-5xl font-extrabold text-white mb-2 ${bodyFont}`}>{stat.value}</div>
-                <div className={`text-sm text-white/80 font-medium ${bodyFont}`}>{stat.label}</div>
-              </div>
-            ))}
+              {[
+                { value: "4,000+", label: "Happy Customers" },
+                { value: "30 Min", label: "Avg. Disbursal Time" },
+                { value: "4.9/5", label: "Customer Rating" },
+                { value: "100%", label: "Gold Safety Record" }
+              ].map((stat, index) => (
+                <div key={index} className="text-center py-10 px-4">
+                  <div className={`text-4xl lg:text-5xl font-extrabold text-white mb-2 ${bodyFont}`}>{stat.value}</div>
+                  <div className={`text-sm text-white/80 font-medium ${bodyFont}`}>{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
+      {/* Insights */}
       <section className="py-16 bg-white relative overflow-hidden">
         <PerspectiveGrid color="rgba(200,215,235,0.20)" />
         <div className="container mx-auto max-w-7xl px-4 relative z-10">
@@ -1016,56 +931,41 @@ export const HomeLoanPage = (): JSX.Element => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                thumbnail: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop",
-                title: "How to Improve Your Credit Score in 2025",
-                summary: "Learn proven strategies to boost your credit score and get better loan offers.",
+                thumbnail: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=400&h=250&fit=crop",
+                title: "Gold Loan vs Personal Loan: Which is Better?",
+                summary: "Compare interest rates, eligibility, and turnaround time of gold loans vs personal loans.",
                 readTime: "5 min read",
-                category: "Credit Tips"
+                category: "Gold Loan Tips"
+              },
+              {
+                thumbnail: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop",
+                title: "How Gold Purity Affects Your Loan Amount",
+                summary: "Understand how karat value and weight determine your gold loan eligibility.",
+                readTime: "4 min read",
+                category: "Gold Insights"
               },
               {
                 thumbnail: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=250&fit=crop",
-                title: "Home Loan vs Rent: What's Better in 2025?",
-                summary: "Complete comparison to help you choose the right financing option for your needs.",
-                readTime: "8 min read",
-                category: "Personal Finance"
-              },
-              {
-                thumbnail: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=400&h=250&fit=crop",
-                title: "Business Loan Guide for Startups",
-                summary: "Discover the best practices for using personal loans to achieve your financial goals.",
+                title: "What Happens if You Default on a Gold Loan?",
+                summary: "Know your rights and the lender's process before pledging your gold jewellery.",
                 readTime: "6 min read",
-                category: "Personal Loans"
+                category: "Financial Literacy"
               }
             ].map((post, index) => (
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 bg-white overflow-hidden rounded-xl">
                 <div className="relative overflow-hidden">
-                  <img
-                    src={post.thumbnail}
-                    alt={post.title}
-                    className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                  <img src={post.thumbnail} alt={post.title} className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className="absolute top-3 left-3">
-                    <span className={`bg-[#0050B2] text-white px-3 py-1 rounded-full text-xs font-semibold ${bodyFont}`}>
-                      {post.category}
-                    </span>
+                    <span className={`bg-[#0050B2] text-white px-3 py-1 rounded-full text-xs font-semibold ${bodyFont}`}>{post.category}</span>
                   </div>
                 </div>
                 <CardContent className="p-5">
                   <div className="space-y-3">
-                    <h3 className={`text-base font-bold text-gray-900 leading-snug group-hover:text-[#0050B2] transition-colors duration-300 ${bodyFont}`}>
-                      {post.title}
-                    </h3>
+                    <h3 className={`text-base font-bold text-gray-900 leading-snug group-hover:text-[#0050B2] transition-colors duration-300 ${bodyFont}`}>{post.title}</h3>
                     <p className={`text-sm text-gray-500 leading-relaxed ${bodyFont}`}>{post.summary}</p>
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <span className={`text-xs text-gray-400 ${bodyFont}`}>{post.readTime}</span>
-                      <a
-                        href="https://www.cicd-training.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`text-[#0050B2] hover:text-[#003d8a] text-xs font-semibold inline-flex items-center gap-1 ${bodyFont}`}
-                      >
-                        Read More →
-                      </a>
+                      <a href="/blogs" className={`text-[#0050B2] hover:text-[#003d8a] text-xs font-semibold inline-flex items-center gap-1 ${bodyFont}`}>Read More →</a>
                     </div>
                   </div>
                 </CardContent>
@@ -1080,8 +980,8 @@ export const HomeLoanPage = (): JSX.Element => {
         </div>
       </section>
 
-      {/* Enhanced FAQs Section */}
-            <section id="faqs" className="py-16 bg-[#0e396d] relative overflow-hidden">
+      {/* FAQs */}
+      <section id="faqs" className="py-16 bg-[#0e396d] relative overflow-hidden">
         <TunnelGrid color="rgba(255,255,255,0.18)" />
         <div className="container mx-auto max-w-7xl px-4 relative z-10">
           <div className="text-center mb-12">
@@ -1089,7 +989,7 @@ export const HomeLoanPage = (): JSX.Element => {
               Frequently Asked<br />Questions
             </h2>
             <p className={`text-lg text-white/60 font-medium ${bodyFont}`}>
-              Get answers to common questions about home loans
+              Get answers to common questions about Gold Loans
             </p>
           </div>
           <div className="max-w-4xl mx-auto space-y-3">
@@ -1118,7 +1018,6 @@ export const HomeLoanPage = (): JSX.Element => {
           </div>
         </div>
       </section>
-
     </div>
   );
 };

@@ -9,6 +9,36 @@ import { AmortizationTable } from './AmortizationTable';
 import { generateAmortization, AmortRow } from '../../../utils/calculations';
 import { formatCurrency, getFillPercentage } from '../../../utils/formatters';
 
+const RoomGrid = ({ color = "rgba(180,210,240,0.30)" }: { color?: string }) => {
+  const W = 1440, H = 900, fw = W * 0.45, fh = H * 0.45;
+  const fx = (W - fw) / 2, fy = (H - fh) / 2, fx2 = fx + fw, fy2 = fy + fh, n = 10;
+  const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    lines.push({ x1: W * t, y1: 0, x2: fx + fw * t, y2: fy });
+    lines.push({ x1: W * t, y1: H, x2: fx + fw * t, y2: fy2 });
+    lines.push({ x1: 0, y1: H * t, x2: fx, y2: fy + fh * t });
+    lines.push({ x1: W, y1: H * t, x2: fx2, y2: fy + fh * t });
+  }
+  for (let i = 1; i < n; i++) {
+    const t = i / n;
+    lines.push({ x1: fx * t, y1: fy * t, x2: W - fx * t, y2: fy * t });
+    lines.push({ x1: fx * t, y1: H - fy * t, x2: W - fx * t, y2: H - fy * t });
+    lines.push({ x1: fx * t, y1: fy * t, x2: fx * t, y2: H - fy * t });
+    lines.push({ x1: W - fx * t, y1: fy * t, x2: W - fx * t, y2: H - fy * t });
+    lines.push({ x1: fx + fw * t, y1: fy, x2: fx + fw * t, y2: fy2 });
+    lines.push({ x1: fx, y1: fy + fh * t, x2: fx2, y2: fy + fh * t });
+  }
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        {lines.map((l, i) => <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={color} strokeWidth="0.7" />)}
+        <rect x={fx} y={fy} width={fw} height={fh} fill="none" stroke={color} strokeWidth="0.7" />
+      </svg>
+    </div>
+  );
+};
+
 export const AutomobileLoanCalculatorPage = (): JSX.Element => {
   // Calculator state
   const [loanAmount, setLoanAmount] = useState(800000);
@@ -215,58 +245,65 @@ export const AutomobileLoanCalculatorPage = (): JSX.Element => {
     vehicleType: "Select the type of vehicle you're financing as different vehicles have different interest rate ranges."
   };
 
+  const headingFont = "font-['Power_Grotesk',_'DM_Sans',_sans-serif]";
+  const bodyFont = "font-['DM_Sans',_sans-serif]";
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section id="hero-section" className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-16 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="hero-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#0050B2" strokeWidth="1"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#hero-grid)" />
-          </svg>
-        </div>
-
-        <div className="container mx-auto max-w-7xl px-4 relative z-10">
-          {/* Breadcrumb */}
-          <div className="mb-8">
-            <nav className="flex items-center space-x-2 text-sm">
-              <a href="/" className="text-blue-600 hover:text-blue-800 transition-colors">Home</a>
+      <section id="hero-section" className="bg-white relative overflow-hidden">
+        <RoomGrid />
+        <div className="container mx-auto max-w-7xl px-6 pt-8 pb-0 relative z-10">
+          <div className="flex justify-center mb-10">
+            <div className="flex items-center gap-2 border border-gray-300 rounded-full px-5 py-2.5 bg-gray-50 backdrop-blur-sm">
+              <svg className="w-5 h-5 text-[#0050B2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span className={`text-gray-700 text-sm ${bodyFont}`}>India's most trusted platform</span>
+            </div>
+          </div>
+          <div className="mb-6">
+            <nav className={`flex items-center space-x-2 text-sm ${bodyFont}`}>
+              <a href="/" className="text-gray-600 hover:text-gray-800">Home</a>
               <span className="text-gray-400">/</span>
-              <a href="/calculators" className="text-blue-600 hover:text-blue-800 transition-colors">Calculators</a>
+              <a href="/calculators" className="text-gray-600 hover:text-gray-800">Calculators</a>
               <span className="text-gray-400">/</span>
               <span className="text-gray-600">Automobile Loan Calculator</span>
             </nav>
           </div>
-
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-[#0050B2] to-[#003d8a] rounded-2xl flex items-center justify-center shadow-lg">
-                <CarIcon className="w-8 h-8 text-white" />
-              </div>
-            </div>
-            
-            <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
-              <span className="text-gray-900">Automobile Loan</span>
-              <br />
-              <span className="bg-gradient-to-r from-[#0050B2] to-[#003d8a] bg-clip-text text-transparent">
-                EMI Calculator
-              </span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center pb-14">
+            <h1 className={`text-4xl lg:text-5xl xl:text-[56px] font-normal text-gray-900 leading-[1.15] tracking-tight ${headingFont}`}>
+              Automobile Loan<br />EMI Calculator
             </h1>
-            
-            <p className="text-xl text-gray-600 leading-relaxed mb-8">
-              Calculate your vehicle loan EMI instantly and explore comprehensive information about automobile loans, 
-              interest rates, and loan types for cars, bikes, and commercial vehicles.
+            <p className={`text-xl text-gray-600 leading-relaxed ${bodyFont} font-medium`}>
+              Calculate your vehicle loan EMI instantly for cars, bikes, and commercial vehicles with accurate results.
             </p>
+          </div>
+        </div>
+        <div className="bg-[#0e396d] border-t border-white/10 relative z-10">
+          <div className="container mx-auto max-w-7xl px-4">
+            <div className="flex items-center justify-between flex-wrap lg:flex-nowrap">
+              {[
+                { title: "7.5% Start", desc: "Best auto loan rates" },
+                { title: "100% On-road", desc: "Full funding available" },
+                { title: "5 Yr Max", desc: "Flexible tenure" },
+                { title: "30 Min", desc: "Quick approval" }
+              ].map((item, index, arr) => (
+                <React.Fragment key={item.title}>
+                  <div className="flex flex-col items-start gap-4 py-10 px-10 flex-1">
+                    <h3 className={`font-normal text-white text-[22px] leading-[1.3] ${headingFont}`}>{item.title}</h3>
+                    <p className={`text-[#a0cfff] text-base font-medium leading-[1.3] ${bodyFont}`}>{item.desc}</p>
+                  </div>
+                  {index < arr.length - 1 && <div className="hidden lg:block w-px h-[100px] bg-white/15 flex-shrink-0" />}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Sticky Navigation Tabs */}
-      <div className={`${isTabSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg' : 'relative'} bg-white border-b border-gray-200 transition-all duration-300`}>
+      <div className={`${isTabSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg' : 'relative pt-8 pb-4'} bg-white border-b border-gray-200 transition-all duration-300`}>
         <div className="container mx-auto max-w-7xl px-4">
           <div className="flex items-center justify-center">
             <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
@@ -296,7 +333,7 @@ export const AutomobileLoanCalculatorPage = (): JSX.Element => {
         <section id="calculator" className="py-16">
           <div className="space-y-12">
             <div className="text-center">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-4 ${headingFont}`}>
                 Automobile Loan EMI Calculator
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -370,7 +407,7 @@ export const AutomobileLoanCalculatorPage = (): JSX.Element => {
         <section id="about" className="py-16 bg-gray-50">
           <div className="space-y-12">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-4 ${headingFont}`}>
                 What is an Automobile Loan?
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -499,7 +536,7 @@ export const AutomobileLoanCalculatorPage = (): JSX.Element => {
         <section id="types" className="py-16 bg-white">
           <div className="space-y-12">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-4 ${headingFont}`}>
                 Types of Automobile Loans
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -550,7 +587,7 @@ export const AutomobileLoanCalculatorPage = (): JSX.Element => {
         <section id="rates" className="py-16 bg-gray-50">
           <div className="space-y-12">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-4 ${headingFont}`}>
                 Interest Rate Factors
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -635,7 +672,7 @@ export const AutomobileLoanCalculatorPage = (): JSX.Element => {
         <section id="info" className="py-16 bg-white">
           <div className="space-y-12">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-4 ${headingFont}`}>
                 Additional Information
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">

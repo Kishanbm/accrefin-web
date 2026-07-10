@@ -55,7 +55,7 @@ const testimonials = [
 ];
 
 const stats = [
-  { value: "25,000+", label: "Happy Customers" },
+  { value: "4,000+", label: "Happy Customers" },
   { value: "98%", label: "Approval Rate" },
   { value: "4.9/5", label: "Customer Rating" },
   { value: "24hrs", label: "Average Processing" },
