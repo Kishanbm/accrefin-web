@@ -3,13 +3,6 @@
   "outputDirectory": "accrefin/dist",
   "installCommand": "true",
   "routes": [
-    {
-      "src": "/admin/logout",
-      "headers": { "Set-Cookie": "admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax; Secure" },
-      "status": 302,
-      "dest": "/admin/login"
-    },
-    { "src": "/admin(.*)", "dest": "https://accrefin-web-ten.vercel.app/admin$1" },
     { "src": "/[^.]+$", "dest": "/index.html" }
   ]
 }

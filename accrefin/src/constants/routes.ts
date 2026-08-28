@@ -30,5 +30,7 @@ export const ROUTES = {
         CREDIT_CARD: '/calculators/credit-card',
     },
     BLOGS: '/blogs',
+    BLOG_ADMIN: '/blogs/admin',
+    BLOG_ADMIN_LOGIN: '/blogs/admin/login',
     BLOG_POST: (slug: string) => `/blogs/${slug}`,
 } as const;

@@ -27,8 +27,7 @@ import { HealthInsurancePage } from "./screens/Insurance/HealthInsurancePage/ind
 import { VehicleInsurancePage } from "./screens/Insurance/VehicleInsurancePage/index.ts";
 import { LifeInsurancePage } from "./screens/Insurance/LifeInsurancePage/index.ts";
 import { ApplicationPage } from "./components/sections/ApplicationPage/ApplicationPage";
-import Blogs from "./screens/Resources/BlogsPage/Blogs.tsx";
-import BlogPost from "./screens/Resources/BlogsPage/BlogPosts.tsx";
+import { Blogs, BlogPost, BlogAdmin, BlogAdminLogin } from "./screens/Resources/BlogsPage";
 import { CareersPage } from "./screens/AboutUs/CareerPage/index.ts";
 import { CurrencyConverterPage } from "./screens/Resources/CurrencyConverterPage/index.ts";
 import { IFSCCodeFinderPage } from "./screens/Resources/IFSCCodeFinderPage.tsx/index.ts";
@@ -313,6 +312,26 @@ createRoot(document.getElementById("app") as HTMLElement).render(
               <>
                 <HeaderSection />
                 <Blogs />
+                <FooterSection />
+              </>
+            }
+          />
+          <Route
+            path={ROUTES.BLOG_ADMIN_LOGIN}
+            element={
+              <>
+                <HeaderSection />
+                <BlogAdminLogin />
+                <FooterSection />
+              </>
+            }
+          />
+          <Route
+            path={ROUTES.BLOG_ADMIN}
+            element={
+              <>
+                <HeaderSection />
+                <BlogAdmin />
                 <FooterSection />
               </>
             }

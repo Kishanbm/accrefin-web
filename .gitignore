@@ -3,3 +3,10 @@ node_modules/
 dist/
 build/
 .env
+!.env.example
+.output/
+.nitro/
+.tanstack/
+
+.vercel
+.env*
