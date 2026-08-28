@@ -916,6 +916,69 @@ export const GoldLoanPage = (): JSX.Element => {
         </div>
       </section>
 
+      {/* Insights */}
+      <section className="py-16 bg-white relative overflow-hidden">
+        <PerspectiveGrid color="rgba(200,215,235,0.20)" />
+        <div className="container mx-auto max-w-7xl px-4 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className={`text-3xl lg:text-5xl text-[#273240] mb-4 tracking-tight font-normal ${headingFont}`}>
+              Learn &amp; Grow with<br />Expert Financial Insights
+            </h2>
+            <p className={`text-lg text-gray-500 max-w-2xl mx-auto font-medium ${bodyFont}`}>
+              Stay informed with the latest financial insights, tips, and market trends
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                thumbnail: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=400&h=250&fit=crop",
+                title: "Gold Loan vs Personal Loan: Which is Better?",
+                summary: "Compare interest rates, eligibility, and turnaround time of gold loans vs personal loans.",
+                readTime: "5 min read",
+                category: "Gold Loan Tips"
+              },
+              {
+                thumbnail: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop",
+                title: "How Gold Purity Affects Your Loan Amount",
+                summary: "Understand how karat value and weight determine your gold loan eligibility.",
+                readTime: "4 min read",
+                category: "Gold Insights"
+              },
+              {
+                thumbnail: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=250&fit=crop",
+                title: "What Happens if You Default on a Gold Loan?",
+                summary: "Know your rights and the lender's process before pledging your gold jewellery.",
+                readTime: "6 min read",
+                category: "Financial Literacy"
+              }
+            ].map((post, index) => (
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 bg-white overflow-hidden rounded-xl">
+                <div className="relative overflow-hidden">
+                  <img src={post.thumbnail} alt={post.title} className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div className="absolute top-3 left-3">
+                    <span className={`bg-[#0050B2] text-white px-3 py-1 rounded-full text-xs font-semibold ${bodyFont}`}>{post.category}</span>
+                  </div>
+                </div>
+                <CardContent className="p-5">
+                  <div className="space-y-3">
+                    <h3 className={`text-base font-bold text-gray-900 leading-snug group-hover:text-[#0050B2] transition-colors duration-300 ${bodyFont}`}>{post.title}</h3>
+                    <p className={`text-sm text-gray-500 leading-relaxed ${bodyFont}`}>{post.summary}</p>
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      <span className={`text-xs text-gray-400 ${bodyFont}`}>{post.readTime}</span>
+                      <a href="/blogs" className={`text-[#0050B2] hover:text-[#003d8a] text-xs font-semibold inline-flex items-center gap-1 ${bodyFont}`}>Read More →</a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <Button className={`bg-[#0877ff] hover:bg-[#0666dd] text-white font-bold px-10 py-3 rounded text-sm shadow-[0px_4px_11.8px_-5px_#0050b2] ${bodyFont}`}>
+              Explore Now
+            </Button>
+          </div>
+        </div>
+      </section>
 
       {/* FAQs */}
       <section id="faqs" className="py-16 bg-[#0e396d] relative overflow-hidden">

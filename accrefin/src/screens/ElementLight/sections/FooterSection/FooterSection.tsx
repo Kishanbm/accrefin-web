@@ -1,5 +1,3 @@
-import { getBlogHomeUrl } from "../../../../constants/blog";
-
 const loansLinks = [
   { text: "Personal Loans", href: "/personal-loan" },
   { text: "Home Loans", href: "/home-loan" },
@@ -14,7 +12,7 @@ const loansLinks = [
 const companyLinks = [
   { text: "About", href: "/about" },
   { text: "Partner With Us", href: "/partner" },
-  { text: "Blogs", href: getBlogHomeUrl() },
+  { text: "Blogs", href: "/blogs" },
   { text: "Careers", href: "/careers" },
   { text: "News", href: "/news" },
   { text: "Awards", href: "/awards" },
@@ -60,14 +58,18 @@ export const FooterSection = (): JSX.Element => {
 
           {/* Brand column */}
           <div className="lg:col-span-1 flex flex-col gap-4">
-            <a href="/" className="inline-flex flex-col gap-2 w-fit">
-              <img
-                src="/images/AccrefinLogoCode.svg"
-                alt="Accrefin"
-                className="h-10 w-auto brightness-0 invert"
-              />
-              <span className="text-gray-500 text-xs">much more than money</span>
-            </a>
+            <div className="flex items-center gap-3">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white text-xl"
+                style={{ background: "#1664F5" }}
+              >
+                A
+              </div>
+              <div className="flex flex-col leading-tight">
+                <span className="text-white font-bold text-xl tracking-tight">ACCREFIN</span>
+                <span className="text-gray-500 text-xs">much more than money</span>
+              </div>
+            </div>
             <p className="text-gray-400 text-sm leading-relaxed">
               Your trusted partner for all financial needs. We provide comprehensive loan
               and credit solutions with transparency and reliability.
@@ -167,7 +169,7 @@ export const FooterSection = (): JSX.Element => {
       {/* Scroll to top */}
       <button
         className="fixed bottom-6 right-6 w-11 h-11 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-150 z-50"
-        style={{ background: "#000000" }}
+        style={{ background: "#1664F5" }}
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Scroll to top"
       >

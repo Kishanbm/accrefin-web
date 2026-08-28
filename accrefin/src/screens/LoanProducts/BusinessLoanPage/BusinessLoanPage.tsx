@@ -999,6 +999,92 @@ export const BusinessLoanPage = (): JSX.Element => {
         </div>
       </section>
 
+      {/* Enhanced Blog Section - Moved before FAQs */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto max-w-7xl px-4">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Learn & Grow with Expert Financial Insights
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Stay informed with the latest financial insights, tips, and market trends
+            </p>
+          </div>
+
+          {/* Blog Posts Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                thumbnail: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop",
+                title: "How to Improve Your Credit Score in 2025",
+                summary: "Learn proven strategies to boost your credit score and get better loan offers.",
+                readTime: "5 min read",
+                category: "Credit Tips"
+              },
+              {
+                thumbnail: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=250&fit=crop",
+                title: "Home Loan vs Rent: What's Better in 2025?",
+                summary: "Complete analysis to help you decide between buying and renting a home.",
+                readTime: "8 min read",
+                category: "Home Loans"
+              },
+              {
+                thumbnail: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=400&h=250&fit=crop",
+                title: "Business Loan Guide for Startups",
+                summary: "Everything you need to know about securing funding for your startup.",
+                readTime: "6 min read",
+                category: "Business"
+              }
+            ].map((post, index) => (
+              <Card 
+                key={index}
+                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-white overflow-hidden"
+              >
+                <div className="relative overflow-hidden">
+                  <img
+                    src={post.thumbnail}
+                    alt={post.title}
+                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-[#0050B2] text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      {post.category}
+                    </span>
+                  </div>
+                </div>
+
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-gray-900 leading-tight group-hover:text-[#0050B2] transition-colors duration-300">
+                      {post.title}
+                    </h3>
+
+                    {/* Summary */}
+                    <p className="text-gray-600 leading-relaxed">
+                      {post.summary}
+                    </p>
+
+                    {/* Meta Info */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <span className="text-sm text-gray-500">{post.readTime}</span>
+                      <a
+                        href="https://www.cicd-training.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#0050B2] hover:text-[#003d8a] hover:bg-blue-50 p-2 text-sm font-semibold inline-flex items-center"
+                      >
+                        Read More →
+                      </a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Enhanced FAQs Section */}
             <section id="faqs" className="py-16 bg-[#0e396d] relative overflow-hidden">

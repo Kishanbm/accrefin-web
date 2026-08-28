@@ -1002,6 +1002,83 @@ export const HomeLoanPage = (): JSX.Element => {
         </div>
       </section>
 
+      <section className="py-16 bg-white relative overflow-hidden">
+        <PerspectiveGrid color="rgba(200,215,235,0.20)" />
+        <div className="container mx-auto max-w-7xl px-4 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className={`text-3xl lg:text-5xl text-[#273240] mb-4 tracking-tight font-normal ${headingFont}`}>
+              Learn &amp; Grow with<br />Expert Financial Insights
+            </h2>
+            <p className={`text-lg text-gray-500 max-w-2xl mx-auto font-medium ${bodyFont}`}>
+              Stay informed with the latest financial insights, tips, and market trends
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                thumbnail: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop",
+                title: "How to Improve Your Credit Score in 2025",
+                summary: "Learn proven strategies to boost your credit score and get better loan offers.",
+                readTime: "5 min read",
+                category: "Credit Tips"
+              },
+              {
+                thumbnail: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=250&fit=crop",
+                title: "Home Loan vs Rent: What's Better in 2025?",
+                summary: "Complete comparison to help you choose the right financing option for your needs.",
+                readTime: "8 min read",
+                category: "Personal Finance"
+              },
+              {
+                thumbnail: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=400&h=250&fit=crop",
+                title: "Business Loan Guide for Startups",
+                summary: "Discover the best practices for using personal loans to achieve your financial goals.",
+                readTime: "6 min read",
+                category: "Personal Loans"
+              }
+            ].map((post, index) => (
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 bg-white overflow-hidden rounded-xl">
+                <div className="relative overflow-hidden">
+                  <img
+                    src={post.thumbnail}
+                    alt={post.title}
+                    className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className={`bg-[#0050B2] text-white px-3 py-1 rounded-full text-xs font-semibold ${bodyFont}`}>
+                      {post.category}
+                    </span>
+                  </div>
+                </div>
+                <CardContent className="p-5">
+                  <div className="space-y-3">
+                    <h3 className={`text-base font-bold text-gray-900 leading-snug group-hover:text-[#0050B2] transition-colors duration-300 ${bodyFont}`}>
+                      {post.title}
+                    </h3>
+                    <p className={`text-sm text-gray-500 leading-relaxed ${bodyFont}`}>{post.summary}</p>
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      <span className={`text-xs text-gray-400 ${bodyFont}`}>{post.readTime}</span>
+                      <a
+                        href="https://www.cicd-training.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`text-[#0050B2] hover:text-[#003d8a] text-xs font-semibold inline-flex items-center gap-1 ${bodyFont}`}
+                      >
+                        Read More →
+                      </a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <Button className={`bg-[#0877ff] hover:bg-[#0666dd] text-white font-bold px-10 py-3 rounded text-sm shadow-[0px_4px_11.8px_-5px_#0050b2] ${bodyFont}`}>
+              Explore Now
+            </Button>
+          </div>
+        </div>
+      </section>
 
       {/* Enhanced FAQs Section */}
             <section id="faqs" className="py-16 bg-[#0e396d] relative overflow-hidden">

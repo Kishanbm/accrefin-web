@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "../../../../components/ui/button";
 import { ChevronDownIcon, MenuIcon, XIcon, GlobeIcon } from "lucide-react";
-import { getBlogHomeUrl } from "../../../../constants/blog";
 
 export const HeaderSection = (): JSX.Element => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -58,7 +57,7 @@ export const HeaderSection = (): JSX.Element => {
       label: "Resources",
       hasDropdown: true,
       dropdownItems: [
-        { label: "Blog", href: getBlogHomeUrl() },
+        { label: "Blog", href: "/blogs" },
         { label: "Currency Converter", href: "/currency-converter" },
         { label: "IFSC Code", href: "/ifsc-code" },
       ],

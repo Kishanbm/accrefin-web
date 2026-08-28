@@ -2,9 +2,9 @@
   "name": "accrefin-root",
   "private": true,
   "scripts": {
-    "dev": "npm --prefix=accrefin run dev",
+    "install": "npm --prefix=accrefin install",
     "build": "npm --prefix=accrefin run build",
-    "start": "npm --prefix=accrefin run dev",
-    "dev:blog": "npm --prefix=blog run dev"
+    "dev": "npm --prefix=accrefin run dev",
+    "start": "npm --prefix=accrefin run dev"
   }
 }

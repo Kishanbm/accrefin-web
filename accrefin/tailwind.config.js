@@ -178,7 +178,6 @@ module.exports = {
         "wwwpaisabazaarcomyellow-orange":
           "var(--wwwpaisabazaarcomyellow-orange)",
         wwwpaisabazaarcomzircon: "var(--wwwpaisabazaarcomzircon)",
-        surface: "hsl(var(--muted))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -214,7 +213,6 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ["Power Grotesk", "DM Sans", "sans-serif"],
         "www-paisabazaar-com-open-sans-bold":
           "var(--www-paisabazaar-com-open-sans-bold-font-family)",
         "www-paisabazaar-com-open-sans-regular":

@@ -7,6 +7,7 @@ import { CibilScoreSection } from "./sections/CibilScoreSection";
 import { AppPromotionSection } from "../../components/sections/AppPromotionSection";
 import { WhyAccrefinSection } from "./sections/WhyAccrefinSection";
 import { TestimonialsSection } from "../TestimonialsPage/TestimonialsSection";
+import { BlogSection } from "./sections/BlogSection";
 import { PartnersSection } from "./sections/PartnersSection";
 import { FinancialCalculatorSection } from "./sections/FinancialCalculatorSection";
 import { FooterSection } from "./sections/FooterSection";
@@ -24,6 +25,7 @@ export const ElementLight = (): JSX.Element => {
       <WhyAccrefinSection />
       <TestimonialsSection />
       <PartnersSection />
+      <BlogSection />
       <FooterSection />
     </div>
   );

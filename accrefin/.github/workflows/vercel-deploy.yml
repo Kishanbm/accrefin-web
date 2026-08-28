@@ -3,6 +3,8 @@ name: Deploy Static Site to Vercel
 on:
   push:
     branches: [ main ]
+  repository_dispatch:
+    types: [wordpress-update, wp_publish]
 
 jobs:
   deploy:
